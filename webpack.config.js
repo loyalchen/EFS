@@ -1,5 +1,5 @@
 module.exports = {
-	entry: "./dev/pageJs/siCargo.js",
+	entry: "./dev/flux/siCargo/index.js",
 	output: {
 		path: __dirname + "/built/javascript/",
 		filename: 'siCargo.js'
