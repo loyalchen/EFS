@@ -10,29 +10,6 @@ import workflow from '../../../dev/workflow';
 var CHANGE_EVENT = 'data_change';
 var HASNEW_EVENT = 'has_new_records';
 
-// var _options = {},
-// 	_hasNewRecords = false,
-// 	_lastSyncTime = 'never',
-// 	_originalData = [],
-// 	_formattedData = [],
-// 	_filteredData = [],
-// 	_analyzeData = {},
-// 	_filterOptions = {},
-// 	_filter = {}
-
-
-// var CargoStore = assign({},EventEmitter.prototype,{
-
-// 	emitChange:function(){
-// 		this.emit(CHANGE_EVENT);
-// 	},
-// 	addChangeListener:function(callback){
-// 		this.on(CHANGE_EVENT,callback);
-// 	},
-// 	removeChangeListener:function(callback){
-// 		this.removeListener(CHANGE_EVENT,callback);
-// 	}
-// });
 
 function formatData(data) {
 	for (var i = data.length; i--;) {
@@ -55,7 +32,6 @@ function formatData(data) {
 }
 
 function detectCompare(originalData, newData) {
-	//return false;
 	var originalBkgs = _.map(originalData, function(item) {
 		return item.BookingNumber;
 	});
