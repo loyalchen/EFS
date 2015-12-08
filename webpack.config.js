@@ -1,7 +1,7 @@
 module.exports = {
 	entry: "./dev/flux/siCargo/index.js",
 	output: {
-		path: __dirname + "/built/javascript/",
+		path: __dirname + "/public/built/",
 		filename: 'siCargo.js'
 	},
 	module: {

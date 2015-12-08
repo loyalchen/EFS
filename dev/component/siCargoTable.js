@@ -75,9 +75,15 @@ class siCargoTable extends React.Component {
 
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onSortChange = this._onSortChange.bind(this);
+        this._onChange = this._onChange.bind(this);
         
         this._dataList = [];
         this._defaultSortIndexes = [];
+        this.requestStore = this.props.requestStore;
+
+        if(!this.requestStore){
+        	throw new Error('Fail to initial store.');
+        }
 
         this.state = {
         	sortedDataList:new DataListWrapper(this._defaultSortIndexes,this._dataList),
@@ -110,29 +116,47 @@ class siCargoTable extends React.Component {
         	columnSetting:this.setColumnSetting()
         }
 
-        var that = this;
-        $.ajax({
-    		method:'GET',
-    		url:'/api/si/GetMainRequest',
-    		cache:false
-    	}).success(function(data,status){
-    		that._dataList = data;
-    		var size = that._dataList.length;
+     //    var that = this;
+     //    $.ajax({
+    	// 	method:'GET',
+    	// 	url:'/api/si/GetMainRequest',
+    	// 	cache:false
+    	// }).success(function(data,status){
+    	// 	that._dataList = data;
+    	// 	var size = that._dataList.length;
 
-    		for(var index = 0; index < size; index++){
-    			that._defaultSortIndexes.push(index);
-    		}
+    	// 	for(var index = 0; index < size; index++){
+    	// 		that._defaultSortIndexes.push(index);
+    	// 	}
 
-    		that.setState({
-    			sortedDataList:new DataListWrapper(that._defaultSortIndexes,that._dataList), 
-    			colSortDirs:{}
-    		});
-    	}).error(function(data,status){
-    		alert(status + ':' + data);
-    	});
+    	// 	that.setState({
+    	// 		sortedDataList:new DataListWrapper(that._defaultSortIndexes,that._dataList), 
+    	// 		colSortDirs:{}
+    	// 	});
+    	// }).error(function(data,status){
+    	// 	alert(status + ':' + data);
+    	// });
     };
 
+    componentDidMount(){
+    	this.requestStore.addChangeListener(this._onChange);
+    }
 
+    componentWillUnmount(){
+    	this.requestStore.removeChangeListener(this._onChange);
+    }
+
+	_onChange() {
+		var data = this.requestStore.filterCollection();
+		var size = data.length;
+		for (var index = 0; index < size; index++) {
+			this._defaultSortIndexes.push(index);
+		}
+		this.setState({
+			sortedDataList: new DataListWrapper(this._defaultSortIndexes, data),
+			colSortDirs: {}
+		})
+	}
 
     _onColumnResizeEndCallback(newColumnWidth,columnKey){
     	var newWidths = this.state.columnWidths;

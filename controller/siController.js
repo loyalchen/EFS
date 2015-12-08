@@ -4,13 +4,21 @@ module.exports = function() {
 	this.controllerName = 'si';
 
 	this.GET = {
-		GETMAINREQUEST: function(ctx, callbcak) {
+		GETMAINREQUEST: function(ctx, callback) {
 			siData.GetMainDisplayRequest({
 					userId: 4
 				}, {
-					categoryId: 3
+					categoryId: ctx.query.categoryId
 				},
-				callbcak);
+				callback);
+		},
+		DETECTMAINREQUEST: function(ctx, callback) {
+			siData.DetectMainDisplayRequest({
+					userId: 4
+				}, {
+					categoryId: ctx.query.categoryId
+				},
+				callback);
 		}
 	};
 	this.POST = {};
