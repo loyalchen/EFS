@@ -1,6 +1,8 @@
 import {Table,Column,Cell} from 'fixed-data-table';
 import React from 'react';
 import $ from 'jquery';
+import Immutable from 'immutable';
+
 require('../../node_modules/fixed-data-table/dist/fixed-data-table.min.css');
 
 
@@ -29,7 +31,7 @@ class DataListWrapper {
 	}
 	
 	getObjectAt(index){
-		return this._data[this._indexMap[index]];
+		return this._data.get(this._indexMap[index]);
 	}
 }
 
@@ -75,15 +77,10 @@ class siCargoTable extends React.Component {
 
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onSortChange = this._onSortChange.bind(this);
-        this._onChange = this._onChange.bind(this);
         
-        this._dataList = [];
-        this._defaultSortIndexes = [];
-        this.requestStore = this.props.requestStore;
-
-        if(!this.requestStore){
-        	throw new Error('Fail to initial store.');
-        }
+        // this._dataList = this.props.data;
+        // this._defaultSortIndexes = [];
+        this.initialData();
 
         this.state = {
         	sortedDataList:new DataListWrapper(this._defaultSortIndexes,this._dataList),
@@ -115,48 +112,22 @@ class siCargoTable extends React.Component {
         	},
         	columnSetting:this.setColumnSetting()
         }
-
-     //    var that = this;
-     //    $.ajax({
-    	// 	method:'GET',
-    	// 	url:'/api/si/GetMainRequest',
-    	// 	cache:false
-    	// }).success(function(data,status){
-    	// 	that._dataList = data;
-    	// 	var size = that._dataList.length;
-
-    	// 	for(var index = 0; index < size; index++){
-    	// 		that._defaultSortIndexes.push(index);
-    	// 	}
-
-    	// 	that.setState({
-    	// 		sortedDataList:new DataListWrapper(that._defaultSortIndexes,that._dataList), 
-    	// 		colSortDirs:{}
-    	// 	});
-    	// }).error(function(data,status){
-    	// 	alert(status + ':' + data);
-    	// });
     };
 
-    componentDidMount(){
-    	this.requestStore.addChangeListener(this._onChange);
-    }
+    initialData(){
+    	this._defaultSortIndexes = [];
 
-    componentWillUnmount(){
-    	this.requestStore.removeChangeListener(this._onChange);
-    }
+    	if(Immutable.List.isList(this.props.data)){
+    		this._dataList = this.props.data;
+    	}else{
+    		this._dataList = Immutable.List(this.props.data);
+    	}
 
-	_onChange() {
-		var data = this.requestStore.filterCollection();
-		var size = data.length;
-		for (var index = 0; index < size; index++) {
-			this._defaultSortIndexes.push(index);
-		}
-		this.setState({
-			sortedDataList: new DataListWrapper(this._defaultSortIndexes, data),
-			colSortDirs: {}
-		})
-	}
+    	this._dataList = this.props.data;
+    	for(var i = 0; i < this._dataList.size; i++){
+    		this._defaultSortIndexes.push(i);
+    	}
+    }
 
     _onColumnResizeEndCallback(newColumnWidth,columnKey){
     	var newWidths = this.state.columnWidths;
@@ -167,8 +138,8 @@ class siCargoTable extends React.Component {
     _onSortChange(columnKey,sortDir){
     	var sortIndexes = this._defaultSortIndexes.slice();
     	sortIndexes.sort((indexA,indexB)=>{
-    		var valueA = this._dataList[indexA][columnKey];
-    		var valueB = this._dataList[indexB][columnKey];
+    		var valueA = this._dataList.get(indexA)[columnKey];
+    		var valueB = this._dataList.get(indexB)[columnKey];
     		var sortVal = 0;
     		if(valueA > valueB){
     			sortVal = 1;
@@ -425,6 +396,11 @@ class siCargoTable extends React.Component {
 
     render() {
         var {sortedDataList,colSortDirs,columnWidths,columnSetting} = this.state;
+        if(sortedDataList._data.size === 0){
+        	this.initialData();
+        	sortedDataList=new DataListWrapper(this._defaultSortIndexes,this._dataList);
+        	this.state.sortedDataList = sortedDataList;
+        }
         var that = this;
         var columns = columnSetting.map(function(column){
         	return (

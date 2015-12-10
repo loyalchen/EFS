@@ -1,8 +1,11 @@
 module.exports = {
-	entry: "./dev/flux/siCargo/index.js",
+	entry: {
+		siCargo:"./dev/flux/siCargo/index.js",
+		test:"./dev/flux/test/index.js"
+	},
 	output: {
-		path: __dirname + "/public/built/",
-		filename: 'siCargo.js'
+		path: __dirname + "/public/built/js/",
+		filename: '[name].js'
 	},
 	module: {
 		loaders: [{

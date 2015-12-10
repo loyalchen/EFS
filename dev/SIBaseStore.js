@@ -1,8 +1,13 @@
-import {EventEmitter} from 'events';
+import {
+	EventEmitter
+}
+from 'events';
 import gStyle from './globalStyle';
+import workflow from './workflow';
 import async from 'async';
 import $ from 'jquery';
 import _ from 'underscore';
+import Immutable from 'immutable';
 
 
 var CHANGE_EVENT = 'data_change';
@@ -20,22 +25,22 @@ class SIStore extends EventEmitter {
 			detectDataUrl: props.detectDataUrl,
 			initializing: true,
 			autoSync: true,
-			forceUpdating:false,
+			forceUpdating: false,
 			formatFunc: props.formatFunc,
 			detectCompareFunc: props.detectCompareFunc,
 			errorFunc: props.errorFunc
 		}
 
-		this.analyze = new AnalyzedData(props.analyzeOption);
+		this.analyze = new AnalyzedImmutableRequestData(props.analyzeOption);
 	}
 
 	filterCollection() {
 		return this.analyze.filterCollection(this.formattedData, this.filter)
 	}
 
-	resetFilter() {
-		this.filter = {};
-	}
+	// resetFilter() {
+	// 	this.filter = {};
+	// }
 
 	getData(callback) {
 		var that = this;
@@ -56,7 +61,8 @@ class SIStore extends EventEmitter {
 	}
 
 	analyseCollection() {
-		this.filterOption = this.analyze.getFilterOption(this.formattedData, this.filter)
+		//this.filterOption = 
+		return this.analyze.getFilterOption(this.formattedData);
 	}
 
 	detectData() {
@@ -87,16 +93,13 @@ class SIStore extends EventEmitter {
 			that.options.forceUpdating = true;
 		}
 		if (that.options.initializing || forceFetch === true) {
-			// pageService.loadingShow('Fetching data...');
 			async.waterfall([
 				function(cb) {
 					that.getData(cb);
 				},
 				function(cb) {
-					// pageService.loadingChangeMessage('Analysing data...');
 					that.analyseCollection();
 					that.filterCollection();
-					// pageService.loadingHide();
 					that.options.initializing = false;
 					that.options.forceUpdating = false;
 					that.emitDataChange();
@@ -111,19 +114,19 @@ class SIStore extends EventEmitter {
 
 			});
 			return;
-		}else{
+		} else {
 			that.detectData();
 			return;
 		}
 	}
 
-	stopAutoSync(){
+	stopAutoSync() {
 		this.options.autoSync = false;
 	}
 
 	setIntervalProcess(period) {
 		var that = this;
-		if(!that.options.autoSync){
+		if (!that.options.autoSync) {
 			return;
 		}
 		if (!period || isNaN(period)) {
@@ -162,115 +165,112 @@ class SIStore extends EventEmitter {
 }
 
 
-class AnalyzedData {
+class AnalyzedImmutableRequestData {
 	constructor(props) {
 		this.options = {};
 		this.options.filterColumnNames = props.filterColumnNames;
 	}
 
-	getFilterOption(data, currentFilter) {
-		var columnNames = this.options.filterColumnNames;
-		if (!columnNames || columnNames.length == 0) {
-			return {};
+	getFilterOption(data) {
+		if (!data || data.length == 0) {
+			return Immutable.Map();
 		}
-		var checkObj = {},
-			result = {},
-			i,
-			k,
-			CHECK_VALUE = 'checkValue',
-			oldData = {};
-
-		for (i = columnNames.length; i--;) {
-			checkObj[columnNames[i]] = {};
-			result[columnNames[i]] = [];
+		if (!Immutable.List.isList(data)) {
+			data = Immutable.List(data);
 		}
 
-		if (!_.isEmpty(currentFilter)) {
-			for (k = columnNames.length; k--;) {
-				oldData[columnNames[k]] = [];
-				angular.forEach(currentFilter[columnNames[k]], function(v, i) {
-					// if (v.checked) {
-					oldData[columnNames[k]].push(v);
-					// }
-				});
+		var result = Immutable.Map();
+
+		var result = result.withMutations(map => {
+			for (var item of this.options.filterColumnNames) {
+				map.set(item, Immutable.Set());
 			}
-		}
+		});
 
-		for (i = data.length; i--;) {
-			(function(i) {
-				var item = data[i];
-				for (k = columnNames.length; k--;) {
-					var propName = columnNames[k];
-					if (item[propName] && item[propName].toString() != '') {
-						if (!(checkObj[propName].hasOwnProperty(item[propName]) && checkObj[propName][item[propName]] == CHECK_VALUE)) {
-							result[propName].push({
-								value: item[propName],
-								text: item[propName],
-								checked: !_.isEmpty(currentFilter) ? oldData[propName].indexOf(item[propName]) != -1 : false
-							});
-							checkObj[propName][item[propName]] = CHECK_VALUE;
-						}
-					}
-				}
-			})(i);
-		}
-		this.addSpecialFilterOptions(result, oldData);
-		return result;
-	}
+		// var result = Immutable.Map(this.options.filterColumnNames.map(item => {
+		// 	var temp = {};
+		// 	temp[item] = Immutable.Set();
+		// 	return temp;
+		// }));
 
-	filterCollection(data, filterOption) {
-		//var result = angular.copy(data);
-		var result = $.extend([],data);
-		for (var prop in filterOption) {
-			if (filterOption[prop].length > 0) {
-				for (var i = result.length; i--;) {
-					if (filterOption[prop].indexOf('_Blank') != -1) {
-						if (filterOption[prop].indexOf(result[i][prop]) == -1 && result[i][prop] != '' && result[i][prop]) {
-							(function(i) {
-								result.splice(i, 1);
-							})(i);
-						}
-					} else if (filterOption[prop].indexOf('_Sanction Country') != -1) { //there is no filter has both 'sanction country' and '_Blank', so in order to inprove speed,just use else if
-						if (filterOption[prop].indexOf(result[i][prop]) == -1 && !ruleService.isSanctionCountry(result[i][prop])) {
-							(function(i) {
-								result.splice(i, 1);
-							})(i);
-						}
-					} else if (filterOption[prop].indexOf(result[i][prop]) == -1) {
-						(function(i) {
-							result.splice(i, 1);
-						})(i);
+		result = result.withMutations(map => {
+			for (var requestItem of data.entries()) {
+				for (var filterNameItem of this.options.filterColumnNames) {
+					var value = map.get(filterNameItem);
+					var value2 = value.add(requestItem[filterNameItem]);
+					if (value !== value2) {
+						map.set(filterNameItem, value2);
 					}
 				}
 			}
-		}
-		return result;
+		});
+
+		result = this.addSpecialFilterOptions(result);
+
+		return result.map(item => {
+			return {
+				value: item,
+				label: item
+			};
+		});
 	}
 
-	addSpecialFilterOptions(filterOptions, currentFilter) {
-		if (filterOptions.POR) {
-			filterOptions.POR.push({
-				value: '_Blank',
-				text: '_Blank',
-				checked: currentFilter.POR ? currentFilter.POR.indexOf('_Blank') != -1 : false
-			});
+	filterCollection(data, filter) {
+		var copiedData = Immutable.Seq(data);
+		filter = Immutable.Map(filter);
+		if(filter.size === 0){
+			return copiedData; 
 		}
-		if (filterOptions.POD) {
-			filterOptions.POD.push({
-				value: '_Sanction Country',
-				text: '_Sanction Country',
-				checked: currentFilter.POD ? currentFilter.POD.indexOf('_Sanction Country') != -1 : false
-			});
-		}
-		if (filterOptions.FD) {
-			filterOptions.FD.push({
-				value: '_Sanction Country',
-				text: '_Sanction Country',
-				checked: currentFilter.FD ? currentFilter.FD.indexOf('_Sanction Country') != -1 : false
-			});
-		}
+		copiedData.filter(item => {
+			for (var filterItem of filter.entries()) {
+				if (filterItem.value.size == 0) {
+					continue;
+				} else {
+					if (!filterItem.value.has(item[filterItem.key]) || (filterItem.value.has('_Blank') && (item[filterItem.key] !== null || item[filterItem.key] !== '')) || (filterItem.value.has('_Sanction Country') && !workflow.isSanctionCountry(item[filterItem.key]))) {
+						return false;
+					}
+				}
+			}
+			return true;
+		})
+
+		return copiedData;
 	}
 
+	addSpecialFilterOptions(filterOptions) {
+		if (!Immutable.Map.isMap(filterOptions)) {
+			filterOptions = Immutable.Map(filterOptions);
+		}
+
+		filterOptions.withMutations(map => {
+			if (map.has('POR')) {
+				var value = map.get('POR');
+				var value2 = value.add('_Blank');
+				if (value !== value2) {
+					map.set('POR', value2);
+				}
+			}
+
+			if (map.has('POD')) {
+				var value = map.get('POD');
+				var value2 = value.add('_Sanction Country');
+				if (value !== value2) {
+					map.set('POD', value2);
+				}
+			}
+
+			if (map.has('FD')) {
+				var value = map.get('FD');
+				var value2 = value.add('_Sanction Country');
+				if (value !== value2) {
+					map.set('FD', value2);
+				}
+			}
+
+		});
+		return filterOptions;
+	}
 }
+
 
 module.exports = SIStore;
