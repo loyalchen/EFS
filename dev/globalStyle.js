@@ -13,7 +13,7 @@ var _constant = keyMirror({
 module.exports = {
 
 	formatTime: function(time) {
-		return time ? moment(time).format(formats.time) : moment().format(formats.time);
+		return time ? moment(time).format(formats.time) : '';
 	},
 
 	debugLog: function(text) {

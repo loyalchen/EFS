@@ -23,27 +23,18 @@ class RequestLayout extends React.Component {
 
 		render() {
 			var sideBar, table, detail;
-			var siderBarSytle={
-				backgroundColor:'red'
-			};
-			var tableSytle = {
-				backgroundColor:'blue'
-			};
-			var detailStyle = {
-				backgroundColor:'yellow'
-			};
 			var {filterOptions,requestData,currentFilter} = this.props;
 
 			switch (this.state.module) {
 				case gStyle.constant.PAGE_LIST:
-					sideBar = ( < div className = "col-md-2" style={siderBarSytle} ><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter} />< /div>);
-					table = ( < div className = "col-md-10" style={tableSytle}><SiCargoTable data={requestData} />< /div>);
+					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter} />< /div>);
+					table = ( < div className = "col-md-8"><SiCargoTable data={requestData} />< /div>);
 					detail = null;
 					break;
 				case gStyle.constant.PAGE_DETAIL:
 					sideBar = null
-					table = ( < div className = "col-md-2" style={tableSytle}><SiCargoTable data={requestData} />< /div>);
-					detail = ( < div className = "col-md-10" style={detailStyle}> I am detail < /div>);
+					table = ( < div className = "col-md-2 col-md-offset-1"><SiCargoTable data={requestData} />< /div>);
+					detail = ( < div className = "col-md-8"> I am detail < /div>);
 					break;
 			}
 			return (

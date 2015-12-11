@@ -77,10 +77,7 @@ class siCargoTable extends React.Component {
 
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onSortChange = this._onSortChange.bind(this);
-        
-        // this._dataList = this.props.data;
-        // this._defaultSortIndexes = [];
-        this.initialData();
+        this.initialData(this.props);
 
         this.state = {
         	sortedDataList:new DataListWrapper(this._defaultSortIndexes,this._dataList),
@@ -114,16 +111,16 @@ class siCargoTable extends React.Component {
         }
     };
 
-    initialData(){
+    initialData(props){
     	this._defaultSortIndexes = [];
 
-    	if(Immutable.List.isList(this.props.data)){
-    		this._dataList = this.props.data;
+    	if(Immutable.List.isList(props.data)){
+    		this._dataList = props.data;
     	}else{
-    		this._dataList = Immutable.List(this.props.data);
+    		this._dataList = Immutable.List(props.data);
     	}
 
-    	this._dataList = this.props.data;
+    	this._dataList = props.data;
     	for(var i = 0; i < this._dataList.size; i++){
     		this._defaultSortIndexes.push(i);
     	}
@@ -394,13 +391,16 @@ class siCargoTable extends React.Component {
 		});
     }
 
+    componentWillReceiveProps(nextProps){
+    	this.initialData(nextProps);
+    	this.setState({
+    		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList)
+    	});
+    }
+
     render() {
         var {sortedDataList,colSortDirs,columnWidths,columnSetting} = this.state;
-        if(sortedDataList._data.size === 0){
-        	this.initialData();
-        	sortedDataList=new DataListWrapper(this._defaultSortIndexes,this._dataList);
-        	this.state.sortedDataList = sortedDataList;
-        }
+        	
         var that = this;
         var columns = columnSetting.map(function(column){
         	return (

@@ -187,17 +187,16 @@ class AnalyzedImmutableRequestData {
 			}
 		});
 
-		// var result = Immutable.Map(this.options.filterColumnNames.map(item => {
-		// 	var temp = {};
-		// 	temp[item] = Immutable.Set();
-		// 	return temp;
-		// }));
 
 		result = result.withMutations(map => {
-			for (var requestItem of data.entries()) {
+			for (var [requestItemIndex, requestItemValue] of data.entries()) {
 				for (var filterNameItem of this.options.filterColumnNames) {
+					var columnValue = requestItemValue[filterNameItem];
+					if (!columnValue) {
+						continue;
+					}
 					var value = map.get(filterNameItem);
-					var value2 = value.add(requestItem[filterNameItem]);
+					var value2 = value.add(columnValue);
 					if (value !== value2) {
 						map.set(filterNameItem, value2);
 					}
@@ -207,19 +206,28 @@ class AnalyzedImmutableRequestData {
 
 		result = this.addSpecialFilterOptions(result);
 
-		return result.map(item => {
-			return {
-				value: item,
-				label: item
-			};
-		});
+		result = result.withMutations(map => {
+			map.forEach((value, key, arr) => {
+				var options = value.map(set => {
+					return {
+						value: set,
+						label: set
+					};
+				});
+				arr.set(key, options);
+			});
+		})
+
+
+
+		return result;
 	}
 
 	filterCollection(data, filter) {
 		var copiedData = Immutable.Seq(data);
 		filter = Immutable.Map(filter);
-		if(filter.size === 0){
-			return copiedData; 
+		if (filter.size === 0) {
+			return copiedData;
 		}
 		copiedData.filter(item => {
 			for (var filterItem of filter.entries()) {
