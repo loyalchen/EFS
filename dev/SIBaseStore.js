@@ -44,7 +44,7 @@ class SIStore extends EventEmitter {
 		if(filterArgs.selectValues === ''){
 			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set());
 		}else{
-			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set(filterArgs.selectValues.split(',')));
+			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set(filterArgs.selectValues.split(gStyle.constV.delimiter)));
 		}
 
 		if(newFilter === this.filter){
@@ -79,7 +79,6 @@ class SIStore extends EventEmitter {
 	}
 
 	analyseCollection() {
-		//this.filterOption = 
 		return this.analyze.getFilterOption(this.formattedData);
 	}
 
@@ -164,18 +163,6 @@ class SIStore extends EventEmitter {
 	emitHasNew() {
 		this.emit(HASNEW_EVENT);
 	}
-
-	// emitFilterChange(){
-	// 	this.emit(FILTER_EVENT);
-	// }
-
-	// addFilterListener(callback) {
-	// 	this.on(FILTER_EVENT, callback);
-	// }
-
-	// removeFilterListener(callback) {
-	// 	this.removeListener(FILTER_EVENT, callback);
-	// }
 
 	addHasNewListener(callback) {
 		this.on(HASNEW_EVENT, callback);
@@ -268,7 +255,6 @@ class AnalyzedImmutableRequestData {
 			}
 			return true;
 		});
-
 		return copiedData;
 	}
 

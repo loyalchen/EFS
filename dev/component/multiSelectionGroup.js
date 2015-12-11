@@ -1,6 +1,7 @@
 import React from 'react';
 import RSelect from 'react-select';
 import Immutable from 'immutable';
+import gStyle from '../globalStyle';
 require('../../node_modules/react-select/dist/react-select.min.css');
 
 
@@ -49,7 +50,7 @@ class MultiSelect extends React.Component {
         var placeholder = 'Input ' + this.filterName;
         return (
         	<div className="col-md-12 margin-botton-div">
-                <RSelect multi simpleValue  value={this.state.values} placeholder={placeholder} options={this.state.options} onChange={this._onSelectChange} />
+                <RSelect multi simpleValue delimiter={gStyle.constV.delimiter}  value={this.state.values} placeholder={placeholder} options={this.state.options} onChange={this._onSelectChange} />
             </div>
         	);
     }

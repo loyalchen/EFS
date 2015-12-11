@@ -22,7 +22,8 @@ module.exports = {
 	get constV() {
 		return {
 			True: 'Yes',
-			False: 'No'
+			False: 'No',
+			delimiter:'|'
 		}
 	},
 
