@@ -11,7 +11,6 @@ var _constant = keyMirror({
 });
 
 module.exports = {
-
 	formatTime: function(time) {
 		return time ? moment(time).format(formats.time) : '';
 	},
