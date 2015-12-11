@@ -79,7 +79,8 @@ class MultiSelectGroup extends React.Component {
     }
 
     _onSelectChange(selectValue){
-
+        alert(JSON.stringify(selectValue));
+        this.props.onFilterChange(selectValue);
     }
 
     componentWillReceiveProps(nextProps){

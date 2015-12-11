@@ -1,6 +1,9 @@
-import appDispatcher from './dispatcher';
+import AppDispatcher from './dispatcher';
 import Constant from './constant';
-import {EventEmitter} from 'events';
+import {
+	EventEmitter
+}
+from 'events';
 import $ from 'jquery';
 import _ from 'underscore';
 import gStyle from '../../../dev/globalStyle';
@@ -64,10 +67,14 @@ var cargoStore = new SIBaseStore({
 
 cargoStore.setIntervalProcess();
 
-// AppDispatcher.register(function(action) {
-// 	// switch (action.actionType) {
-// 	// 	case Constant.
-// 	// }
-// });
+AppDispatcher.register(function(action) {
+	switch (action.actionType) {
+		case Constant.FILTER_CHANGED:
+			if (cargoStore.changeFilter(action.filterArgs)) {
+				cargoStore.emitDataChange();
+			}
+			break;
+	}
+});
 
 module.exports = cargoStore

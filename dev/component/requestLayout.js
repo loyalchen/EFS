@@ -23,11 +23,11 @@ class RequestLayout extends React.Component {
 
 		render() {
 			var sideBar, table, detail;
-			var {filterOptions,requestData,currentFilter} = this.props;
+			var {filterOptions,requestData,currentFilter,onFilterChange} = this.props;
 
 			switch (this.state.module) {
 				case gStyle.constant.PAGE_LIST:
-					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter} />< /div>);
+					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
 					table = ( < div className = "col-md-8"><SiCargoTable data={requestData} />< /div>);
 					detail = null;
 					break;

@@ -12,6 +12,7 @@ import Immutable from 'immutable';
 
 var CHANGE_EVENT = 'data_change';
 var HASNEW_EVENT = 'has_new_records';
+var FILTER_EVENT = 'filter_change';
 
 
 class SIStore extends EventEmitter {
@@ -30,17 +31,34 @@ class SIStore extends EventEmitter {
 			detectCompareFunc: props.detectCompareFunc,
 			errorFunc: props.errorFunc
 		}
+		this.filter = Immutable.Map();
 
 		this.analyze = new AnalyzedImmutableRequestData(props.analyzeOption);
+	}
+
+	changeFilter(filterArgs){
+		if(!filterArgs){
+			throw new Error('filter arg is null.');
+		}
+		var newFilter;
+		if(filterArgs.selectValues === ''){
+			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set());
+		}else{
+			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set(filterArgs.selectValues.split(',')));
+		}
+
+		if(newFilter === this.filter){
+			return false;
+		}else{
+			this.filter = newFilter;
+			return true;
+		}
 	}
 
 	filterCollection() {
 		return this.analyze.filterCollection(this.formattedData, this.filter)
 	}
 
-	// resetFilter() {
-	// 	this.filter = {};
-	// }
 
 	getData(callback) {
 		var that = this;
@@ -147,6 +165,18 @@ class SIStore extends EventEmitter {
 		this.emit(HASNEW_EVENT);
 	}
 
+	// emitFilterChange(){
+	// 	this.emit(FILTER_EVENT);
+	// }
+
+	// addFilterListener(callback) {
+	// 	this.on(FILTER_EVENT, callback);
+	// }
+
+	// removeFilterListener(callback) {
+	// 	this.removeListener(FILTER_EVENT, callback);
+	// }
+
 	addHasNewListener(callback) {
 		this.on(HASNEW_EVENT, callback);
 	}
@@ -222,22 +252,22 @@ class AnalyzedImmutableRequestData {
 
 	filterCollection(data, filter) {
 		var copiedData = Immutable.Seq(data);
-		filter = Immutable.Map(filter);
 		if (filter.size === 0) {
 			return copiedData;
 		}
-		copiedData.filter(item => {
-			for (var filterItem of filter.entries()) {
-				if (filterItem.value.size == 0) {
+
+		copiedData = copiedData.filter(item => {
+			for (var [filterItemName,filterItemValue] of filter.entries()) {
+				if (filterItemValue.size == 0) {
 					continue;
 				} else {
-					if (!filterItem.value.has(item[filterItem.key]) || (filterItem.value.has('_Blank') && (item[filterItem.key] !== null || item[filterItem.key] !== '')) || (filterItem.value.has('_Sanction Country') && !workflow.isSanctionCountry(item[filterItem.key]))) {
+					if (!filterItemValue.has(item[filterItemName]) || (filterItemValue.has('_Blank') && (item[filterItemName] !== null || item[filterItemName] !== '')) || (filterItemValue.has('_Sanction Country') && !workflow.isSanctionCountry(item[filterItemName]))) {
 						return false;
 					}
 				}
 			}
 			return true;
-		})
+		});
 
 		return copiedData;
 	}
