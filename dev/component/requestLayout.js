@@ -8,7 +8,8 @@ class RequestLayout extends React.Component {
 		constructor(props) {
 			super(props);
 			this.state = {
-				module: gStyle.constant.PAGE_LIST
+				module: gStyle.constant.PAGE_LIST,
+				tableWidth:null
 			}
 			this._onClick = this._onClick.bind(this);
 		}
@@ -21,19 +22,29 @@ class RequestLayout extends React.Component {
 			console.log('current module is ' + this.state.module);
 		}
 
+		componentDidMount(){
+			this.setState({
+				tableWidth:document.getElementById('fullTable').clientWidth
+			});
+			
+		}
+
+
+
 		render() {
 			var sideBar, table, detail;
+			var {tableWidth} = this.state;
 			var {filterOptions,requestData,currentFilter,onFilterChange} = this.props;
 
 			switch (this.state.module) {
 				case gStyle.constant.PAGE_LIST:
 					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-					table = ( < div className = "col-md-8"><SiCargoTable data={requestData} />< /div>);
+					table = ( < div className = "col-md-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} />< /div>);
 					detail = null;
 					break;
 				case gStyle.constant.PAGE_DETAIL:
 					sideBar = null
-					table = ( < div className = "col-md-2 col-md-offset-1"><SiCargoTable data={requestData} />< /div>);
+					table = ( < div className = "col-md-2 col-md-offset-1" id='briefTable'><SiCargoTable data={requestData} />< /div>);
 					detail = ( < div className = "col-md-8"> I am detail < /div>);
 					break;
 			}

@@ -5,7 +5,8 @@ from 'events';
 import gStyle from './globalStyle';
 import workflow from './workflow';
 import async from 'async';
-import $ from 'jquery';
+import request from 'superagent'
+import noCache from 'superagent-no-cache'
 import _ from 'underscore';
 import Immutable from 'immutable';
 
@@ -36,20 +37,20 @@ class SIStore extends EventEmitter {
 		this.analyze = new AnalyzedImmutableRequestData(props.analyzeOption);
 	}
 
-	changeFilter(filterArgs){
-		if(!filterArgs){
+	changeFilter(filterArgs) {
+		if (!filterArgs) {
 			throw new Error('filter arg is null.');
 		}
 		var newFilter;
-		if(filterArgs.selectValues === ''){
-			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set());
-		}else{
-			newFilter = this.filter.set(filterArgs.filterName,Immutable.Set(filterArgs.selectValues.split(gStyle.constV.delimiter)));
+		if (filterArgs.selectValues === '') {
+			newFilter = this.filter.set(filterArgs.filterName, Immutable.Set());
+		} else {
+			newFilter = this.filter.set(filterArgs.filterName, Immutable.Set(filterArgs.selectValues.split(gStyle.constV.delimiter)));
 		}
 
-		if(newFilter === this.filter){
+		if (newFilter === this.filter) {
 			return false;
-		}else{
+		} else {
 			this.filter = newFilter;
 			return true;
 		}
@@ -62,20 +63,21 @@ class SIStore extends EventEmitter {
 
 	getData(callback) {
 		var that = this;
-		$.ajax({
-			method: 'GET',
-			url: that.options.getDataUrl,
-			cache: false
-		}).success(function(data, status) {
-			that.lastSyncTime = gStyle.formatTime();
-			that.originalData = data;
-			that.formattedData = that.options.formatFunc(data);
-			gStyle.debugLog('get data success');
-			callback(null);
-		}).error(function(data, status) {
-			gStyle.debugLog('get data error.' + data);
-			callback(data);
-		});
+		request
+			.get(that.options.getDataUrl)
+			.use(noCache)
+			.end(function(err, res) {
+				if (err) {
+					gStyle.debugLog('get data error.' + JSON.stringify(err));
+					callback(JSON.stringify(err));
+					return;
+				}
+				that.lastSyncTime = gStyle.formatTime();
+				that.originalData = res.body;
+				that.formattedData = that.options.formatFunc(res.body);
+				gStyle.debugLog('get data success');
+				callback(null);
+			});
 	}
 
 	analyseCollection() {
@@ -84,20 +86,23 @@ class SIStore extends EventEmitter {
 
 	detectData() {
 		var that = this;
-		$.ajax({
-			method: 'GET',
-			url: that.options.detectDataUrl,
-			cache: false
-		}).success(function(data, status) {
-			if (that.options.detectCompareFunc(that.originalData, data)) {
-				that.hasNewRecords = true;
-				that.emitHasNew();
-			}
-			that.lastSyncTime = gStyle.formatTime();
-			gStyle.debugLog('detect data success');
-		}).error(function(data, status) {
-			gStyle.debugLog('detect data error.' + data);
-		});
+		request
+			.get(that.options.detectDataUrl)
+			.use(noCache)
+			.end(function(err, res) {
+				if (err) {
+					gStyle.debugLog('detect data error.' + data);
+					return;
+				}
+
+				if (that.options.detectCompareFunc(that.originalData, res.body)) {
+					that.hasNewRecords = true;
+					that.emitHasNew();
+				}
+				that.lastSyncTime = gStyle.formatTime();
+				gStyle.debugLog('detect data success');
+			});
+
 	}
 
 	process(forceFetch) {
@@ -244,7 +249,7 @@ class AnalyzedImmutableRequestData {
 		}
 
 		copiedData = copiedData.filter(item => {
-			for (var [filterItemName,filterItemValue] of filter.entries()) {
+			for (var [filterItemName, filterItemValue] of filter.entries()) {
 				if (filterItemValue.size == 0) {
 					continue;
 				} else {

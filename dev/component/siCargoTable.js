@@ -1,6 +1,5 @@
 import {Table,Column,Cell} from 'fixed-data-table';
 import React from 'react';
-import $ from 'jquery';
 import Immutable from 'immutable';
 
 require('../../node_modules/fixed-data-table/dist/fixed-data-table.min.css');
@@ -9,6 +8,12 @@ require('../../node_modules/fixed-data-table/dist/fixed-data-table.min.css');
 const TextCell = ({rowIndex,data,columnKey})=>(
 	<Cell>
 		{data.getObjectAt(rowIndex)[columnKey]}
+	</Cell>
+	);
+
+const CheckBoxCell = ({rowIndex,data,columnKey})=>(
+	<Cell>
+		<input type="checkbox" identity={data.getObjectAt(rowIndex)[columnKey]} />
 	</Cell>
 	);
 
@@ -34,6 +39,29 @@ class DataListWrapper {
 		return this._data.get(this._indexMap[index]);
 	}
 }
+
+
+class SelectAllCell extends React.Component {
+    constructor(props) {
+        super(props);
+        this._handleClick = this._handleClick.bind(this);
+    }
+
+    _handleClick(e){
+    	// e.preventDefault();
+    	this.props.handleCheckAll(e.target.checked);
+    }
+    render() {
+        return (
+        	<Cell>
+        		<input type="checkbox" onClick={this._handleClick} />
+        	</Cell>
+        	);
+    }
+}
+
+
+
 
 class SortHeaderCell extends React.Component {
     constructor(props) {
@@ -77,6 +105,7 @@ class siCargoTable extends React.Component {
 
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onSortChange = this._onSortChange.bind(this);
+        this._handleCheckAll = this._handleCheckAll.bind(this);
         this.initialData(this.props);
 
         this.state = {
@@ -84,28 +113,28 @@ class siCargoTable extends React.Component {
         	colSortDirs:{},
         	columnWidths:{
         		BookingNumber:200,
-        		OriginalType:100,
+        		OriginalType:80,
         		BLNo:100,
         		ExecuteeName:100,
         		DisplayStatusName:100,
         		IsProblem:100,
-        		Service:100,
-        		Vessel:100,
+        		Service:150,
+        		Vessel:150,
         		Voyage:100,
         		POR:100,
         		POL:100,
         		HandlingOffice:100,
         		ContractHolder:100,
         		ContainerCount:100,
-        		ReceivedTime:100,
+        		ReceivedTime:150,
         		Remark:100,
-        		SICutOffTime:100,
-        		CargoDTXTime:100,
+        		SICutOffTime:150,
+        		CargoDTXTime:150,
         		MailCounter:100,
-        		POD:100,
-        		FD:100,
-        		DispatchTime:100,
-        		AssignTime:100
+        		POD:250,
+        		FD:250,
+        		DispatchTime:150,
+        		AssignTime:150
         	},
         	columnSetting:this.setColumnSetting()
         }
@@ -159,6 +188,9 @@ class siCargoTable extends React.Component {
     	});
     }
 
+    _handleCheckAll(checked){
+    	alert(checked);
+    }
 
     getFullColumnDefs(){
     	return [{
@@ -400,7 +432,7 @@ class siCargoTable extends React.Component {
 
     render() {
         var {sortedDataList,colSortDirs,columnWidths,columnSetting} = this.state;
-        	
+        var actWidth =  this.props.cascadeWidth || 1200; //parseInt(document.body.offsetWidth*3/4, 10);
         var that = this;
         var columns = columnSetting.map(function(column){
         	return (
@@ -428,8 +460,18 @@ class siCargoTable extends React.Component {
         		rowsCount={sortedDataList.getSize()}
         		onColumnResizeEndCallback={this._onColumnResizeEndCallback}
         		isColumnResizing={false}
-        		width={1300}
+        		width={actWidth} //{1300}
         		height={600}>
+        		<Column
+        			columnKey = {"requestId"}
+        			key={"checked"}
+        			header={<SelectAllCell handleCheckAll={this._handleCheckAll}></SelectAllCell>}
+	        		fixed={true}
+	        		cell={<CheckBoxCell data={sortedDataList} />}
+	        		width={30}
+	        		isResizable={true}
+	        		minWidth={70}/>
+        		
         		{columns}
         	</Table>
         	);

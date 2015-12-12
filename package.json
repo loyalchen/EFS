@@ -10,7 +10,6 @@
     "fixed-data-table": "^0.6.0",
     "flux": "^2.1.1",
     "immutable": "^3.7.5",
-    "jquery": "^2.1.4",
     "keymirror": "^0.1.1",
     "koa": "^1.1.2",
     "koa-json": "^1.1.1",
@@ -25,6 +24,8 @@
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-select": "^0.9.1",
+    "superagent": "^1.5.0",
+    "superagent-no-cache": "^0.1.0",
     "thunkify": "^2.1.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.2.2"

@@ -16,7 +16,7 @@ module.exports = {
 	},
 
 	debugLog: function(text) {
-		console.log(this.formatTime() + ' : ' + text);
+		console.log(this.formatTime(moment()) + ' : ' + text);
 	},
 
 	get constV() {

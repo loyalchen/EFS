@@ -4,7 +4,6 @@ import {
 	EventEmitter
 }
 from 'events';
-import $ from 'jquery';
 import _ from 'underscore';
 import gStyle from '../../../dev/globalStyle';
 import SIBaseStore from '../../../dev/SIBaseStore';
