@@ -31,3 +31,6 @@ setting.js
 
 # built files
 public/built/
+
+#build test
+test
