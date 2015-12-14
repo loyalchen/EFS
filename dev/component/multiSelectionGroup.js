@@ -70,7 +70,6 @@ class MultiSelectGroup extends React.Component {
     _initialFilter(currentFilter){
         this.filter = Immutable.Map({});
         for(var key of this.state.filterOptions.keys()){
-            // this.filter[key]='';
             this.filter.set(key,'');
         }
         if(currentFilter){

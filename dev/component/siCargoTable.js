@@ -1,9 +1,16 @@
 import {Table,Column,Cell} from 'fixed-data-table';
 import React from 'react';
 import Immutable from 'immutable';
+import ReactDom from 'react-dom';
 
 require('../../node_modules/fixed-data-table/dist/fixed-data-table.min.css');
 
+const PROP_CHECK='checked';
+
+const SortTypes = {
+	ASC:'ASC',
+	DESC:'DESC'
+};
 
 const TextCell = ({rowIndex,data,columnKey})=>(
 	<Cell>
@@ -11,16 +18,29 @@ const TextCell = ({rowIndex,data,columnKey})=>(
 	</Cell>
 	);
 
-const CheckBoxCell = ({rowIndex,data,columnKey})=>(
-	<Cell>
-		<input type="checkbox" identity={data.getObjectAt(rowIndex)[columnKey]} />
-	</Cell>
-	);
+class CheckBoxCell extends React.Component {
+    constructor(props) {
+        super(props);
+        this.displayName = 'CheckBoxCell';
+        var {rowIndex,data,columnKey} = this.props;
+        this.dataItem = data.getObjectAt(rowIndex);
+        this._hangleChange = this._hangleChange.bind(this);
+    }
 
-const SortTypes = {
-	ASC:'ASC',
-	DESC:'DESC'
-};
+    _hangleChange(e){
+    	this.props.valueChanged(ReactDom.findDOMNode(this).attributes['data-identity'].value,e.target.checked);
+    }
+
+    render() {
+    	var {rowIndex,data,columnKey} = this.props;
+        return (
+        	<Cell data-identity={data.getObjectAt(rowIndex)[this.props.identityColumnName]}>
+				<input type="checkbox"  checked={data.getObjectAt(rowIndex)[PROP_CHECK] == true?true:false} onChange={this._hangleChange} />
+			</Cell>
+        	);
+    }
+}
+
 
 function reverseSortDirection(sortDir){
 	return sortDir === SortTypes.DESC ? SortTypes.ASC:SortTypes.DESC;
@@ -32,11 +52,11 @@ class DataListWrapper {
 		this._data = data;
 	}
 	getSize(){
-		return this._indexMap.length;
+		return this._indexMap.size;
 	}
 	
 	getObjectAt(index){
-		return this._data.get(this._indexMap[index]);
+		return this._data.get(this._indexMap.get(index));
 	}
 }
 
@@ -48,13 +68,12 @@ class SelectAllCell extends React.Component {
     }
 
     _handleClick(e){
-    	// e.preventDefault();
     	this.props.handleCheckAll(e.target.checked);
     }
     render() {
         return (
         	<Cell>
-        		<input type="checkbox" onClick={this._handleClick} />
+        		<input type="checkbox" onClick={this._handleClick} checked={this.props.checked} />
         	</Cell>
         	);
     }
@@ -106,10 +125,12 @@ class siCargoTable extends React.Component {
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onSortChange = this._onSortChange.bind(this);
         this._handleCheckAll = this._handleCheckAll.bind(this);
+        this._handleCheckValueChange = this._handleCheckValueChange.bind(this);
         this.initialData(this.props);
 
         this.state = {
         	sortedDataList:new DataListWrapper(this._defaultSortIndexes,this._dataList),
+        	checkedAll:false,
         	colSortDirs:{},
         	columnWidths:{
         		BookingNumber:200,
@@ -141,18 +162,17 @@ class siCargoTable extends React.Component {
     };
 
     initialData(props){
-    	this._defaultSortIndexes = [];
-
+    	this._defaultSortIndexes = Immutable.List();
     	if(Immutable.List.isList(props.data)){
     		this._dataList = props.data;
     	}else{
     		this._dataList = Immutable.List(props.data);
     	}
-
-    	this._dataList = props.data;
-    	for(var i = 0; i < this._dataList.size; i++){
-    		this._defaultSortIndexes.push(i);
-    	}
+    	this._defaultSortIndexes = this._defaultSortIndexes.withMutations(list=>{
+    		for(var i = 0; i < this._dataList.size; i++){
+    			list.push(i);
+    		}
+    	});
     }
 
     _onColumnResizeEndCallback(newColumnWidth,columnKey){
@@ -162,8 +182,7 @@ class siCargoTable extends React.Component {
     }
 
     _onSortChange(columnKey,sortDir){
-    	var sortIndexes = this._defaultSortIndexes.slice();
-    	sortIndexes.sort((indexA,indexB)=>{
+    	var sortIndexes = this._defaultSortIndexes.sort((indexA,indexB)=>{
     		var valueA = this._dataList.get(indexA)[columnKey];
     		var valueB = this._dataList.get(indexB)[columnKey];
     		var sortVal = 0;
@@ -180,16 +199,45 @@ class siCargoTable extends React.Component {
     		return sortVal;
     	});
 
-    	this.setState({
-    		sortedDataList: new DataListWrapper(sortIndexes,this._dataList),
-    		colSortDirs:{
-    			[columnKey]:sortDir
-    		}
-    	});
+    	if(sortIndexes !== this._defaultSortIndexes){
+    		this._defaultSortIndexes = sortIndexes;
+    		this.setState({
+	    		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList),
+	    		colSortDirs:{
+	    			[columnKey]:sortDir
+    			}
+    		});
+    	}
     }
 
     _handleCheckAll(checked){
-    	alert(checked);
+    	this._dataList.forEach((v,k,arr)=>{
+    		v[PROP_CHECK] = checked;
+    	});
+    	this.setState({
+    		checkedAll: checked,
+			sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList)
+    	});
+    }
+
+    _handleCheckValueChange(identity,checked){
+    	var index =this._dataList.findIndex((v,k,arr)=>{
+    		return v[this.props.identityColumnName] == identity;
+    	});
+    	var data = this._dataList.get(index);
+    	data.checked = checked;
+    	this._dataList = this._dataList.set(index,data);
+    	if(checked === false && this.state.checkedAll === true){
+    		this.setState({
+    			checkedAll: false,
+    			sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList)
+    		});
+    	}else{
+    		this.setState({
+    			sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList)
+    		});
+    	}
+    	this.props.handleCheckValueChange(identity,checked);
     }
 
     getFullColumnDefs(){
@@ -431,8 +479,8 @@ class siCargoTable extends React.Component {
     }
 
     render() {
-        var {sortedDataList,colSortDirs,columnWidths,columnSetting} = this.state;
-        var actWidth =  this.props.cascadeWidth || 1200; //parseInt(document.body.offsetWidth*3/4, 10);
+        var {sortedDataList,colSortDirs,columnWidths,columnSetting,checkedAll} = this.state;
+        var actWidth =  this.props.cascadeWidth || 1200;
         var that = this;
         var columns = columnSetting.map(function(column){
         	return (
@@ -460,14 +508,14 @@ class siCargoTable extends React.Component {
         		rowsCount={sortedDataList.getSize()}
         		onColumnResizeEndCallback={this._onColumnResizeEndCallback}
         		isColumnResizing={false}
-        		width={actWidth} //{1300}
+        		width={actWidth}
         		height={600}>
         		<Column
-        			columnKey = {"requestId"}
-        			key={"checked"}
-        			header={<SelectAllCell handleCheckAll={this._handleCheckAll}></SelectAllCell>}
+        			columnKey = {this.props.identityColumnName}
+        			key={this.props.identityColumnName}
+        			header={<SelectAllCell handleCheckAll={this._handleCheckAll} checked={checkedAll}></SelectAllCell>}
 	        		fixed={true}
-	        		cell={<CheckBoxCell data={sortedDataList} />}
+	        		cell={<CheckBoxCell data={sortedDataList} valueChanged={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />}
 	        		width={30}
 	        		isResizable={true}
 	        		minWidth={70}/>

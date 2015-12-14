@@ -18,18 +18,14 @@ class CargoLayout extends React.Component {
             currentFilter:Immutable.Map()
         }
         this._onRequestDataChanged = this._onRequestDataChanged.bind(this);
-        // this._onFilterChanged = this._onFilterChanged.bind(this);
-        // this._onFreshFilterData = this._onFreshFilterData.bind(this);
     }
 
     componentDidMount(){
         requestDataStore.addChangeListener(this._onRequestDataChanged);
-        // requestDataStore.addFilterListener(this._onFreshFilterData);
     }
 
     componentWillUnmount(){
         requestDataStore.removeChangeListener(this._onRequestDataChanged);
-        // requestDataStore.removeFilterListener(this._onFreshFilterData);
     }
 
     _onRequestDataChanged(){
@@ -39,27 +35,20 @@ class CargoLayout extends React.Component {
         });
     }
 
-    // _onFilterChanged(){
-    //     this.setState({
-    //         requestData:Immutable.List(requestDataStore.filterCollection())
-    //     });
-    // }
 
      _onfilterChange(filterArgs){
         Action.changeFilter(filterArgs);
      }
 
-     // _onFreshFilterData(){
-     //    this.setState({
-     //        requestData:
-     //    })
-     // }
+     _handleCheckValueChange(identity,checkedValue){
+        alert(identity+':'+checkedValue);
+     }
 
 
     render() {
         var {filterOptions,requestData,currentFilter} = this.state;
         return (
-        	<RequestLayout filterOptions={filterOptions} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} />
+        	<RequestLayout filterOptions={filterOptions} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={"RequestId"}/>
         	);
     }
 }
