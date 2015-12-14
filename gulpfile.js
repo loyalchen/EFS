@@ -17,3 +17,8 @@ gulp.task('default',function(){
 	gulp.src('./node_modules/bootstrap/dist/js/*.min.js')
 		.pipe(gulp.dest('./public/js'));
 });
+
+var watcher = gulp.watch('./dev/css/*.css',['default']);
+watcher.on('change',function(event){
+	console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+});

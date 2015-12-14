@@ -11,19 +11,19 @@ var _constant = keyMirror({
 });
 
 module.exports = {
-
 	formatTime: function(time) {
-		return time ? moment(time).format(formats.time) : moment().format(formats.time);
+		return time ? moment(time).format(formats.time) : '';
 	},
 
 	debugLog: function(text) {
-		console.log(this.formatTime() + ' : ' + text);
+		console.log(this.formatTime(moment()) + ' : ' + text);
 	},
 
 	get constV() {
 		return {
 			True: 'Yes',
-			False: 'No'
+			False: 'No',
+			delimiter:'|'
 		}
 	},
 
