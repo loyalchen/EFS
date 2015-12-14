@@ -5,6 +5,7 @@ var json = require('koa-json');
 var Router = require('koa-router');
 var views = require('koa-views');
 var serve = require('koa-static');
+var fs = require('fs');
 
 
 var apiRouter = require('./router/apiRouter');
@@ -27,8 +28,10 @@ var apiUrlRouter = new Router({
 
 var htmlUrlRouter = new Router();
 
+var reactRouter = new Router();
+
 htmlUrlRouter.get('/',function*(next){
-	yield this.render('siCargo');
+	yield this.render('react');
 });
 
 apiUrlRouter.get('/:controllerName/:actionName', function* (next) {
