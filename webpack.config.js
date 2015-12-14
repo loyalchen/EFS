@@ -1,6 +1,6 @@
 module.exports = {
 	entry: {
-		tutorial:"./dev/component/tutorial1.js"
+		tutorial:"./dev/component/tutorial.js"
 	},
 	output: {
 		path: __dirname + "/public/built/js/",
