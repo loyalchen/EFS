@@ -1,6 +1,6 @@
 module.exports = {
 	entry: {
-		tutorial:"./dev/component/tutorial.js"
+		singUp:"./dev/flux/signUp/index.js",
 		siCargo:"./dev/flux/siCargo/index.js",
 		test:"./dev/flux/test/index.js",
 		uTest:"./dev/test/siCargoTableTest.js"
