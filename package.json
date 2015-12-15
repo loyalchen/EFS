@@ -11,6 +11,7 @@
     "flux": "^2.1.1",
     "history": "^1.13.1",
     "immutable": "^3.7.5",
+    "js-cookie": "^2.0.4",
     "keymirror": "^0.1.1",
     "koa": "^1.1.2",
     "koa-json": "^1.1.1",

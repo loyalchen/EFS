@@ -61,7 +61,7 @@ class DataListWrapper {
 }
 
 
-class SelectAllCell extends React.Component {
+class SelectAllHeaderCell extends React.Component {
     constructor(props) {
         super(props);
         this._handleClick = this._handleClick.bind(this);
@@ -78,8 +78,6 @@ class SelectAllCell extends React.Component {
         	);
     }
 }
-
-
 
 
 class SortHeaderCell extends React.Component {
@@ -526,7 +524,7 @@ class siCargoTable extends React.Component {
         		<Column
         			columnKey = {this.props.identityColumnName}
         			key={this.props.identityColumnName}
-        			header={<SelectAllCell handleCheckAll={this._handleCheckAll} checked={checkedAll}></SelectAllCell>}
+        			header={<SelectAllHeaderCell handleCheckAll={this._handleCheckAll} checked={checkedAll}></SelectAllHeaderCell>}
 	        		fixed={true}
 	        		cell={<CheckBoxCell data={sortedDataList} valueChanged={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />}
 	        		width={30}
@@ -540,5 +538,3 @@ class siCargoTable extends React.Component {
 }
 
 module.exports = siCargoTable;
-
-
