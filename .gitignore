@@ -32,10 +32,8 @@ setting.js
 # built files
 public/built/
 
-<<<<<<< HEAD
 #sublime
 sublime
 =======
 #build test
 test
->>>>>>> d2ba88d3e3084d97ac5819fc1264d64a6a9894e9
