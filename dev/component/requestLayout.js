@@ -12,6 +12,7 @@ class RequestLayout extends React.Component {
 				tableWidth:null
 			}
 			this._onClick = this._onClick.bind(this);
+			this._handleCheckValueChange = this._handleCheckValueChange.bind(this);
 		}
 
 		_onClick(e){
@@ -29,6 +30,10 @@ class RequestLayout extends React.Component {
 			
 		}
 
+		_handleCheckValueChange(identity,checkedValue){
+			this.props.handleCheckValueChange(identity,checkedValue);
+		}
+
 
 
 		render() {
@@ -39,12 +44,12 @@ class RequestLayout extends React.Component {
 			switch (this.state.module) {
 				case gStyle.constant.PAGE_LIST:
 					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-					table = ( < div className = "col-md-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} />< /div>);
+					table = ( < div className = "col-md-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />< /div>);
 					detail = null;
 					break;
 				case gStyle.constant.PAGE_DETAIL:
 					sideBar = null
-					table = ( < div className = "col-md-2 col-md-offset-1" id='briefTable'><SiCargoTable data={requestData} />< /div>);
+					table = ( < div className = "col-md-2 col-md-offset-1" id='briefTable'><SiCargoTable data={requestData} identityColumnName={this.props.identityColumnName} />< /div>);
 					detail = ( < div className = "col-md-8"> I am detail < /div>);
 					break;
 			}
