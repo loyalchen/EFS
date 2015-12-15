@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 import SiCargoTable from '../../component/siCargoTable';
 import RequestLayout from '../../component/requestLayout';
 import requestDataStore from './requestDataStore';
+import Action from './action';
 
 
 
@@ -16,18 +17,18 @@ class CargoLayout extends React.Component {
             requestData:Immutable.List(),
             currentFilter:Immutable.Map()
         }
-        this._onRequestDataChange = this._onRequestDataChange.bind(this);
+        this._onRequestDataChanged = this._onRequestDataChanged.bind(this);
     }
 
     componentDidMount(){
-        requestDataStore.addChangeListener(this._onRequestDataChange);
+        requestDataStore.addChangeListener(this._onRequestDataChanged);
     }
 
     componentWillUnmount(){
-        requestDataStore.removeChangeListener(this._onRequestDataChange);
+        requestDataStore.removeChangeListener(this._onRequestDataChanged);
     }
 
-    _onRequestDataChange(){
+    _onRequestDataChanged(){
         this.setState({
             filterOptions:Immutable.Map(requestDataStore.analyseCollection()),
             requestData:Immutable.List(requestDataStore.filterCollection())
@@ -35,10 +36,19 @@ class CargoLayout extends React.Component {
     }
 
 
+     _onfilterChange(filterArgs){
+        Action.changeFilter(filterArgs);
+     }
+
+     _handleCheckValueChange(identity,checkedValue){
+        alert(identity+':'+checkedValue);
+     }
+
+
     render() {
         var {filterOptions,requestData,currentFilter} = this.state;
         return (
-        	<RequestLayout filterOptions={filterOptions} requestData={requestData} currentFilter={currentFilter} />
+        	<RequestLayout filterOptions={filterOptions} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={"RequestId"}/>
         	);
     }
 }

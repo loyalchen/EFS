@@ -1,6 +1,9 @@
 module.exports = {
 	entry: {
 		tutorial:"./dev/component/tutorial.js"
+		siCargo:"./dev/flux/siCargo/index.js",
+		test:"./dev/flux/test/index.js",
+		uTest:"./dev/test/siCargoTableTest.js"
 	},
 	output: {
 		path: __dirname + "/public/built/js/",
