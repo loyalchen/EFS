@@ -27,7 +27,7 @@ var apiUrlRouter = new Router({
 
 var htmlUrlRouter = new Router();
 
-htmlUrlRouter.get('/',function*(next){
+htmlUrlRouter.get('/siCargo',function*(next){
 	yield this.render('siCargo');
 });
 
