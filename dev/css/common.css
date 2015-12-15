@@ -2,8 +2,16 @@ body{
 	padding-top: 70px; 
 	background: #e7e8eb; 
 	font-size: 1.2em;
+	min-width: 1000px;
+	width: auto !important;
+	width:1000px;
 }
 
 .margin-botton-div{
 	margin-bottom: 5px;
+}
+
+.container{
+	min-width: 1000px;
+	width: 1000px !important;
 }
