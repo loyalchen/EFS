@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import Immutable from 'immutable';
+import {Router,Route,Link} from 'react-router';
 
 import SiCargoTable from '../../component/siCargoTable';
 import RequestLayout from '../../component/requestLayout';
@@ -48,13 +49,21 @@ class CargoLayout extends React.Component {
     render() {
         var {filterOptions,requestData,currentFilter} = this.state;
         return (
-        	<RequestLayout filterOptions={filterOptions} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={"RequestId"}/>
+        	<RequestLayout filterOptions={filterOptions} currentItem={this.props.params.identity} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={"RequestId"}/>
         	);
     }
 }
 
-
 ReactDom.render(
-	<CargoLayout />,
-	document.getElementById('content')
-	)
+    <Router>
+        <Route path="/" component={CargoLayout}>
+            <Route path="item/:identity" compent={CargoLayout} />
+        </Route>
+    </Router>,
+    document.getElementById('content')
+    );
+
+// ReactDom.render(
+// 	<CargoLayout />,
+// 	document.getElementById('content')
+// 	);

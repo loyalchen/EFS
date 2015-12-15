@@ -360,6 +360,18 @@ class siCargoTable extends React.Component {
 			}];
     }
 
+    getBriefColumnDefs(){
+    	return [
+    		{
+				field: 'BookingNumber',
+				displayName: 'Booking',
+				order: 1,
+				visible: true,
+				necessary: true
+			}
+    	];
+    }
+
     setColumnSetting(){
     	var setting = {
 			"siCargoColumn": [{
@@ -470,6 +482,7 @@ class siCargoTable extends React.Component {
 			return a.order - b.order;
 		});
     }
+
 
     componentWillReceiveProps(nextProps){
     	this.initialData(nextProps);
