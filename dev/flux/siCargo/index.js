@@ -6,6 +6,7 @@ import {Router,Route,Link} from 'react-router';
 import SiCargoTable from '../../component/siCargoTable';
 import RequestLayout from '../../component/requestLayout';
 import requestDataStore from './requestDataStore';
+import columnDataStore from './siColumnDataStore';
 import Action from './action';
 
 
@@ -16,23 +17,34 @@ class CargoLayout extends React.Component {
         this.state = {
             filterOptions:Immutable.Map(),
             requestData:Immutable.List(),
+            columnData:columnDataStore.getDisplayColumns(),
+            tableModel:'',
             currentFilter:Immutable.Map()
         }
         this._onRequestDataChanged = this._onRequestDataChanged.bind(this);
+        this._onColumnChanged = this._onColumnChanged.bind(this);
     }
 
     componentDidMount(){
         requestDataStore.addChangeListener(this._onRequestDataChanged);
+        columnDataStore.addChangeListener(this._onColumnChanged);
     }
 
     componentWillUnmount(){
         requestDataStore.removeChangeListener(this._onRequestDataChanged);
+        columnDataStore.removeChangeListener(this._onColumnChanged);
     }
 
     _onRequestDataChanged(){
         this.setState({
             filterOptions:Immutable.Map(requestDataStore.analyseCollection()),
             requestData:Immutable.List(requestDataStore.filterCollection())
+        });
+    }
+
+    _onColumnChanged(){
+        this.setState({
+            columnData:columnDataStore.getDisplayColumns()
         });
     }
 
@@ -47,9 +59,16 @@ class CargoLayout extends React.Component {
 
 
     render() {
-        var {filterOptions,requestData,currentFilter} = this.state;
+        var {filterOptions,requestData,currentFilter,columnData,tableModel} = this.state;
         return (
-        	<RequestLayout filterOptions={filterOptions} currentItem={this.props.params.identity} requestData={requestData} currentFilter={currentFilter}  onFilterChange={this._onfilterChange} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={"RequestId"}/>
+        	<RequestLayout filterOptions={filterOptions} 
+                            currentItem={this.props.params.identity} 
+                            requestData={requestData} 
+                            currentFilter={currentFilter}  
+                            onFilterChange={this._onfilterChange} 
+                            handleCheckValueChange={this._handleCheckValueChange} 
+                            identityColumnName={"RequestId"}
+                            columnData={columnData}/>
         	);
     }
 }

@@ -42,6 +42,29 @@ class CheckBoxCell extends React.Component {
 }
 
 
+ class SelectedCell extends React.Component {
+     constructor(props) {
+         super(props);
+         this.displayName = 'SelectedCell';
+     }
+     render() {
+     	var {rowIndex,data,columnKey,currentItemIdentity} = this.props;
+     	var mark = null;
+     	if(data.getObjectAt(rowIndex)[columnKey] == currentItemIdentity){
+     		mark = (<span className="glyphicon glyphicon-asterisk" aria-hidden="true"></span>);
+     	}
+        return (
+         	<Cell>
+         		{mark}
+         	</Cell>
+         	);
+     }
+
+ }
+ 
+
+
+
 function reverseSortDirection(sortDir){
 	return sortDir === SortTypes.DESC ? SortTypes.ASC:SortTypes.DESC;
 }
@@ -155,7 +178,9 @@ class siCargoTable extends React.Component {
         		DispatchTime:150,
         		AssignTime:150
         	},
-        	columnSetting:this.setColumnSetting()
+        	columnData:this.props.columnData,
+        	tableModel:'full',
+        	cascadeWidth:null
         }
     };
 
@@ -238,125 +263,7 @@ class siCargoTable extends React.Component {
     	this.props.handleCheckValueChange(identity,checked);
     }
 
-    getFullColumnDefs(){
-    	return [{
-				field: 'BookingNumber',
-				displayName: 'Booking',
-				order: 1,
-				visible: true,
-				necessary: true
-			}, {
-				field: 'OriginalType',
-				displayName: 'Type',
-				order: 2,
-				visible: true
-			}, {
-				field: 'BLNo',
-				displayName: 'BOL',
-				order: 3,
-				visible: true
-			}, {
-				field: 'ExecuteeName',
-				displayName: 'Executee',
-				order: 4,
-				visible: true
-			}, {
-				field: 'DisplayStatusName',
-				displayName: 'Status',
-				order: 5,
-				visible: true
-			}, {
-				field: 'IsProblem',
-				displayName: 'IsProblem',
-				order: 6,
-				visible: true
-			}, {
-				field: 'Service',
-				displayName: 'Service',
-				order: 7,
-				visible: true
-			}, {
-				field: 'Vessel',
-				displayName: 'Vessel',
-				order: 8,
-				visible: true
-			}, {
-				field: 'Voyage',
-				displayName: 'Voyage',
-				order: 9,
-				visible: true
-			}, {
-				field: 'POR',
-				displayName: 'POR',
-				order: 10,
-				visible: true
-			}, {
-				field: 'POL',
-				displayName: 'POL',
-				order: 11,
-				visible: true
-			}, {
-				field: 'HandlingOffice',
-				displayName: 'Handling Office',
-				order: 12,
-				visible: true
-			}, {
-				field: 'ContractHolder',
-				displayName: 'Contract Holder',
-				order: 13,
-				visible: true
-			}, {
-				field: 'ContainerCount',
-				displayName: 'Cntr Count',
-				order: 14,
-				visible: true
-			}, {
-				field: 'ReceivedTime',
-				displayName: 'Received Time',
-				order: 15,
-				visible: true
-			}, {
-				field: 'Remark',
-				displayName: 'Remark',
-				order: 999,
-				visible: false
-			}, {
-				field: 'SICutOffTime',
-				displayName: 'SICutOffTime',
-				order: 999,
-				visible: false
-			}, {
-				field: 'CargoDTXTime',
-				displayName: 'CargoDTXTime',
-				order: 999,
-				visible: false
-			}, {
-				field: 'MailCounter',
-				displayName: 'Update Count',
-				order: 999,
-				visible: false
-			}, {
-				field: 'POD',
-				displayName: 'POD',
-				order: 999,
-				visible: false
-			}, {
-				field: 'FD',
-				displayName: 'FD',
-				order: 999,
-				visible: false
-			}, {
-				field: 'DispatchTime',
-				displayName: 'Dispatch Time',
-				order: 999,
-				visible: false
-			}, {
-				field: 'AssignTime',
-				displayName: 'Assign Time',
-				order: 999,
-				visible: false
-			}];
-    }
+    
 
     getBriefColumnDefs(){
     	return [
@@ -370,148 +277,77 @@ class siCargoTable extends React.Component {
     	];
     }
 
-    setColumnSetting(){
-    	var setting = {
-			"siCargoColumn": [{
-				"index": 0,
-				"order": 1,
-				"visible": true
-			}, {
-				"index": 1,
-				"order": 7,
-				"visible": true
-			}, {
-				"index": 2,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 3,
-				"order": 8,
-				"visible": true
-			}, {
-				"index": 4,
-				"order": 10,
-				"visible": true
-			}, {
-				"index": 5,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 6,
-				"order": 14,
-				"visible": true
-			}, {
-				"index": 7,
-				"order": 12,
-				"visible": true
-			}, {
-				"index": 8,
-				"order": 13,
-				"visible": true
-			}, {
-				"index": 9,
-				"order": 9,
-				"visible": true
-			}, {
-				"index": 10,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 11,
-				"order": 11,
-				"visible": true
-			}, {
-				"index": 12,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 13,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 14,
-				"order": 3,
-				"visible": true
-			}, {
-				"index": 15,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 16,
-				"order": 5,
-				"visible": true
-			}, {
-				"index": 17,
-				"order": 4,
-				"visible": true
-			}, {
-				"index": 18,
-				"order": 999,
-				"visible": false
-			}, {
-				"index": 19,
-				"order": 16,
-				"visible": true
-			}, {
-				"index": 20,
-				"order": 15,
-				"visible": true
-			}, {
-				"index": 21,
-				"order": 6,
-				"visible": true
-			}, {
-				"index": 22,
-				"order": 2,
-				"visible": true
-			}]
-		};
-		var fullColumnDefs = this.getFullColumnDefs();
-		var columnDefs = [];
-		for(var i = 0; i < fullColumnDefs.length;i++){
-			if(setting.siCargoColumn[i] !== null && setting.siCargoColumn[i].visible === true){
-				fullColumnDefs[i].order = setting.siCargoColumn[i].order;
-				(function(i){
-					columnDefs.push(fullColumnDefs[i]);
-				})(i)
-			}
-		}
-		return columnDefs.sort((a,b)=>{
-			return a.order - b.order;
-		});
-    }
+    
 
 
     componentWillReceiveProps(nextProps){
     	this.initialData(nextProps);
     	this.setState({
-    		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList)
+    		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList),
+    		columnData:this.props.columnData,
+    		tableModel:this.props.tableModel,
+    		cascadeWidth:this.props.cascadeWidth
     	});
     }
 
     render() {
-        var {sortedDataList,colSortDirs,columnWidths,columnSetting,checkedAll} = this.state;
-        var actWidth =  this.props.cascadeWidth || 1200;
+        var {sortedDataList,colSortDirs,columnWidths,columnData,checkedAll,tableModel,cascadeWidth} = this.state;
+        var actWidth =  cascadeWidth || 1200,
+        	briefColumn = null;
         var that = this;
-        var columns = columnSetting.map(function(column){
-        	return (
+        var columns,checkColumn,selectedColumn       
+        if(!tableModel || tableModel == 'full'){
+        	columns = columnData.filter(item=>item.visible == true).toList();
+        	checkColumn = (
         		<Column
-        			columnKey = {column.field}
-        			key={column.field}
-        			header={
-        				<SortHeaderCell
-	        				onSortChange={that._onSortChange}
-	        				sortDir={colSortDirs[column.field]}>
-	        				{column.displayName}
-	        			</SortHeaderCell>
-	        		}
-	        		fixed={column.necessary === true ? true: false}
-	        		cell={<TextCell data={sortedDataList} />}
-	        		width={columnWidths[column.field]}
-	        		isResizable={true}
-	        		minWidth={70}/>
-        		)
-        });
+        			columnKey = {this.props.identityColumnName}
+        			key={this.props.identityColumnName}
+        			header={<SelectAllHeaderCell handleCheckAll={this._handleCheckAll} checked={checkedAll}></SelectAllHeaderCell>}
+	        		fixed={true}
+	        		cell={<CheckBoxCell data={sortedDataList} valueChanged={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />}
+	        		width={30}
+	        		isResizable={true}/>
+        		);
+        	selectedColumn = null;
+        }else{
+        	briefColumn = actWidth - 30;// substract checkbox/selected column width
+        	columns = columnData.filter(item=>item.necessary == true).toList();
+        	checkColumn = null;
+        	selectedColumn = (
+        		<Column
+        			columnKey = {this.props.identityColumnName}
+        			key={this.props.identityColumnName}
+        			header={<Cell></Cell>}
+        			fixed={true}
+        			cell={<SelectedCell data={sortedDataList} currentItemIdentity={this.props.currentItem}></SelectedCell>}
+        			width={30}
+        			isResizable={true}/>
+        		);
+        }
+
+
+
+
+        columns = columns.map(function(column){
+		        	return (
+		        		<Column
+		        			columnKey = {column.field}
+		        			key={column.field}
+		        			header={
+		        				<SortHeaderCell
+			        				onSortChange={that._onSortChange}
+			        				sortDir={colSortDirs[column.field]}>
+			        				{column.displayName}
+			        			</SortHeaderCell>
+			        		}
+			        		fixed={column.necessary === true ? true: false}
+			        		cell={<TextCell data={sortedDataList} />}
+			        		width={briefColumn? briefColumn : columnWidths[column.field]}
+			        		isResizable={true}
+			        		minWidth={70}/>
+		        		)
+	        	});
+        
         return (
         	<Table
         		rowHeight={30}
@@ -521,16 +357,8 @@ class siCargoTable extends React.Component {
         		isColumnResizing={false}
         		width={actWidth}
         		height={600}>
-        		<Column
-        			columnKey = {this.props.identityColumnName}
-        			key={this.props.identityColumnName}
-        			header={<SelectAllHeaderCell handleCheckAll={this._handleCheckAll} checked={checkedAll}></SelectAllHeaderCell>}
-	        		fixed={true}
-	        		cell={<CheckBoxCell data={sortedDataList} valueChanged={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />}
-	        		width={30}
-	        		isResizable={true}
-	        		minWidth={70}/>
-        		
+        		{checkColumn}
+        		{selectedColumn}
         		{columns}
         	</Table>
         	);

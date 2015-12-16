@@ -10,10 +10,12 @@ class RequestLayout extends React.Component {
 			super(props);
 			this.state = {
 				module: gStyle.constant.PAGE_LIST,
-				tableWidth:null
+				fullTableWidth:null,
+				briefTableWidth:null
 			}
 			this._onClick = this._onClick.bind(this);
 			this._handleCheckValueChange = this._handleCheckValueChange.bind(this);
+
 		}
 
 		_onClick(e){
@@ -25,9 +27,11 @@ class RequestLayout extends React.Component {
 		}
 
 		componentDidMount(){
-			var tableContainer = document.getElementById('fullTable') || document.getElementById('briefTable');
+			var fullTableContainer = document.getElementById('fullTable'),
+				briefTableContainer = document.getElementById('briefTable');
 			this.setState({
-				tableWidth:tableContainer.clientWidth
+				fullTableWidth:fullTableContainer.clientWidth,
+				briefTableWidth:briefTableContainer.clientWidth
 			});
 			
 		}
@@ -36,21 +40,19 @@ class RequestLayout extends React.Component {
 			this.props.handleCheckValueChange(identity,checkedValue);
 		}
 
-
-
 		render() {
 			var sideBar, table, detail;
-			var {tableWidth} = this.state;
-			var {filterOptions,requestData,currentFilter,onFilterChange,currentItem} = this.props;
+			var {fullTableWidth,briefTableWidth} = this.state;
+			var {filterOptions,requestData,currentFilter,onFilterChange,currentItem,columnData} = this.props;
 			var sideBarClassName,tableClassName,detailClassName;
 			
 			if(!currentItem){
-				sideBar = ( < div className = "col-xs-2 col-xs-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-				table = ( < div className = "col-xs-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />< /div>);
+				sideBar = ( < div className = "col-xs-2 col-xs-offset-1" id='briefTable'><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
+				table = ( < div className = "col-xs-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={fullTableWidth} handleCheckValueChange={this._handleCheckValueChange} columnData={columnData} tableModel={'full'} identityColumnName={this.props.identityColumnName} />< /div>);
 				detail = null;
 			}else{
 				sideBar = null
-				table = ( < div className = "col-xs-2 col-xs-offset-1" id='briefTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} identityColumnName={this.props.identityColumnName} />< /div>);
+				table = ( < div className = "col-xs-2 col-xs-offset-1" ><SiCargoTable data={requestData} cascadeWidth={briefTableWidth} columnData={columnData} currentItem={currentItem} tableModel={'brief'} identityColumnName={this.props.identityColumnName} />< /div>);
 				detail = ( < div className = "col-xs-8"> I am detail < /div>);
 			}
 			// switch (!currentItem) {
@@ -67,7 +69,7 @@ class RequestLayout extends React.Component {
 				{sideBar} 
 				{table}
 				{detail} 
-				<Link to="item/1">Try</Link>
+				<Link to="item/217133">Try</Link>
 				</div>);
 			}
 		}
