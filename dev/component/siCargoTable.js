@@ -274,9 +274,9 @@ class siCargoTable extends React.Component {
     	
     	this.setState({
     		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList),
-    		columnData:this.props.columnData,
-    		tableModel:this.props.tableModel,
-    		cascadeWidth:this.props.cascadeWidth
+    		columnData:nextProps.columnData,
+    		tableModel:nextProps.tableModel,
+    		cascadeWidth:nextProps.cascadeWidth
     	});
     }
 
