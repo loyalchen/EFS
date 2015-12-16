@@ -2,6 +2,7 @@ import React from 'react';
 import gStyle from '../globalStyle';
 import SiCargoTable from './siCargoTable';
 import MultiSelectGroup from './multiSelectionGroup';
+import {Link} from 'react-router';
 
 
 class RequestLayout extends React.Component {
@@ -24,8 +25,9 @@ class RequestLayout extends React.Component {
 		}
 
 		componentDidMount(){
+			var tableContainer = document.getElementById('fullTable') || document.getElementById('briefTable');
 			this.setState({
-				tableWidth:document.getElementById('fullTable').clientWidth
+				tableWidth:tableContainer.clientWidth
 			});
 			
 		}
@@ -39,25 +41,33 @@ class RequestLayout extends React.Component {
 		render() {
 			var sideBar, table, detail;
 			var {tableWidth} = this.state;
-			var {filterOptions,requestData,currentFilter,onFilterChange} = this.props;
-
-			switch (this.state.module) {
-				case gStyle.constant.PAGE_LIST:
-					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-					table = ( < div className = "col-md-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />< /div>);
-					detail = null;
-					break;
-				case gStyle.constant.PAGE_DETAIL:
-					sideBar = null
-					table = ( < div className = "col-md-2 col-md-offset-1" id='briefTable'><SiCargoTable data={requestData} identityColumnName={this.props.identityColumnName} />< /div>);
-					detail = ( < div className = "col-md-8"> I am detail < /div>);
-					break;
+			var {filterOptions,requestData,currentFilter,onFilterChange,currentItem} = this.props;
+			var sideBarClassName,tableClassName,detailClassName;
+			
+			if(!currentItem){
+				sideBar = ( < div className = "col-xs-2 col-xs-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
+				table = ( < div className = "col-xs-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />< /div>);
+				detail = null;
+			}else{
+				sideBar = null
+				table = ( < div className = "col-xs-2 col-xs-offset-1" id='briefTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} identityColumnName={this.props.identityColumnName} />< /div>);
+				detail = ( < div className = "col-xs-8"> I am detail < /div>);
 			}
+			// switch (!currentItem) {
+			// 	case gStyle.constant.PAGE_LIST:
+					
+			// 		break;
+			// 	case gStyle.constant.PAGE_DETAIL:
+					
+			// 		break;
+			// }
 			return (
 				<div className="row">
+
 				{sideBar} 
 				{table}
 				{detail} 
+				<Link to="item/1">Try</Link>
 				</div>);
 			}
 		}
