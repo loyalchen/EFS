@@ -30,8 +30,8 @@ var htmlUrlRouter = new Router();
 
 var reactRouter = new Router();
 
-htmlUrlRouter.get('/siCargo',function*(next){
-	yield this.render('siCargo');
+htmlUrlRouter.get('/',function*(next){
+	yield this.render('react');
 });
 
 apiUrlRouter.get('/:controllerName/:actionName', function* (next) {

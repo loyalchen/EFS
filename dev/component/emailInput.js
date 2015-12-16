@@ -19,8 +19,7 @@ class EmailInput extends React.Component {
 					{optionsNode}
 				</select>
 				<ShowErrMessage 
-					visible="false"
-					errorMessage="Input empty"
+					errorMessage={this.props.errorMessage}
 				/>
 			</div>
 		);

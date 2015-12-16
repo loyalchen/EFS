@@ -22,8 +22,7 @@ class SelectInput extends React.Component {
 				</select>
 
 				<ShowErrMessage
-					visible="false"
-					errorMessage="Input empty"
+					errorMessage={this.props.errorMessage}
 				/>
 			</div>
 		);

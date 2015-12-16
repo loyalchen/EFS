@@ -98,7 +98,6 @@ class RegisterForm extends React.Component {
 				<UserInput 
 					placeholder="Input your FullName" 
 					inputText={this.state.fullName}
-					emptyMessage='123'
 					errorMessage={fullNameErrMsg}
 					ref="fullName"
 					valid = {this.validateFullName}
