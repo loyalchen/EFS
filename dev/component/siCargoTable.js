@@ -41,7 +41,6 @@ class CheckBoxCell extends React.Component {
     }
 }
 
-
  class SelectedCell extends React.Component {
      constructor(props) {
          super(props);
@@ -62,9 +61,6 @@ class CheckBoxCell extends React.Component {
 
  }
  
-
-
-
 function reverseSortDirection(sortDir){
 	return sortDir === SortTypes.DESC ? SortTypes.ASC:SortTypes.DESC;
 }
@@ -83,7 +79,6 @@ class DataListWrapper {
 	}
 }
 
-
 class SelectAllHeaderCell extends React.Component {
     constructor(props) {
         super(props);
@@ -101,7 +96,6 @@ class SelectAllHeaderCell extends React.Component {
         	);
     }
 }
-
 
 class SortHeaderCell extends React.Component {
     constructor(props) {
@@ -133,11 +127,6 @@ class SortHeaderCell extends React.Component {
         	);
     }
 }
-
-
-
-
-
 
 class siCargoTable extends React.Component {
     constructor(props) {
@@ -227,7 +216,9 @@ class siCargoTable extends React.Component {
     		this.setState({
 	    		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList),
 	    		colSortDirs:{
-	    			[columnKey]:sortDir
+	    			//[columnKey]:sortDir
+	    			key:columnKey,
+	    			sortDir:sortDir
     			}
     		});
     	}
@@ -263,8 +254,6 @@ class siCargoTable extends React.Component {
     	this.props.handleCheckValueChange(identity,checked);
     }
 
-    
-
     getBriefColumnDefs(){
     	return [
     		{
@@ -277,11 +266,12 @@ class siCargoTable extends React.Component {
     	];
     }
 
-    
-
-
     componentWillReceiveProps(nextProps){
     	this.initialData(nextProps);
+    	if(this.state.colSortDirs){
+    		this._onSortChange(this.state.colSortDirs.key,this.state.colSortDirs.sortDir);	
+    	}
+    	
     	this.setState({
     		sortedDataList: new DataListWrapper(this._defaultSortIndexes,this._dataList),
     		columnData:this.props.columnData,
@@ -325,9 +315,6 @@ class siCargoTable extends React.Component {
         		);
         }
 
-
-
-
         columns = columns.map(function(column){
 		        	return (
 		        		<Column
@@ -336,7 +323,7 @@ class siCargoTable extends React.Component {
 		        			header={
 		        				<SortHeaderCell
 			        				onSortChange={that._onSortChange}
-			        				sortDir={colSortDirs[column.field]}>
+			        				sortDir={colSortDirs.key == column.field ? colSortDirs.sortDir:null}>
 			        				{column.displayName}
 			        			</SortHeaderCell>
 			        		}
