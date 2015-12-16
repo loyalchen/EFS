@@ -10,5 +10,9 @@ exports.getUserInfo = function() {
 		}
 		
 	}
-	return userInfo;
+	//return userInfo;
+	return {
+		id:3,
+		FullName:'Jason Liu'
+	}
 }
