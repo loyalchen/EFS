@@ -3,14 +3,14 @@ import ReactDom from 'react-dom';
 import Immutable from 'immutable';
 import {Router,Route,Link} from 'react-router';
 
-import SiCargoTable from '../../component/siCargoTable';
 import RequestLayout from '../../component/requestLayout';
 import requestDataStore from './requestDataStore';
 import columnDataStore from './siColumnDataStore';
 import Action from './action';
 
-
-
+var detailBtns = [{
+    
+}];
 class CargoLayout extends React.Component {
     constructor(props) {
         super(props);
@@ -54,7 +54,7 @@ class CargoLayout extends React.Component {
      }
 
      _handleCheckValueChange(identity,checkedValue){
-        alert(identity+':'+checkedValue);
+        Action.checkRequest(identity,checkedValue);
      }
 
 
@@ -68,7 +68,8 @@ class CargoLayout extends React.Component {
                             onFilterChange={this._onfilterChange} 
                             handleCheckValueChange={this._handleCheckValueChange} 
                             identityColumnName={"RequestId"}
-                            columnData={columnData}/>
+                            columnData={columnData}
+                            btnProps={btnProps}/>
         	);
     }
 }

@@ -11,6 +11,7 @@
     "flux": "^2.1.1",
     "history": "^1.13.1",
     "immutable": "^3.7.5",
+    "jquery": "^2.1.4",
     "js-cookie": "^2.0.4",
     "keymirror": "^0.1.1",
     "koa": "^1.1.2",
@@ -49,9 +50,9 @@
     "webpack": "^1.12.9"
   },
   "scripts": {
-    "webpack":"webpack --process --color --watch",
-    "gulp":"gulp",
-    "start":"npm run webpack | npm run gulp"
+    "webpack": "webpack --process --color --watch",
+    "gulp": "gulp",
+    "start": "npm run webpack | npm run gulp"
   },
   "repository": {
     "type": "git",

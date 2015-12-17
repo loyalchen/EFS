@@ -128,7 +128,7 @@ class SortHeaderCell extends React.Component {
     }
 }
 
-class siCargoTable extends React.Component {
+class RequestTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -329,7 +329,7 @@ class siCargoTable extends React.Component {
 			        		}
 			        		fixed={column.necessary === true ? true: false}
 			        		cell={<TextCell data={sortedDataList} />}
-			        		width={briefColumn? briefColumn : columnWidths[column.field]}
+			        		width={briefColumn? briefColumn-10 : columnWidths[column.field]}
 			        		isResizable={true}
 			        		minWidth={70}/>
 		        		)
@@ -342,7 +342,7 @@ class siCargoTable extends React.Component {
         		rowsCount={sortedDataList.getSize()}
         		onColumnResizeEndCallback={this._onColumnResizeEndCallback}
         		isColumnResizing={false}
-        		width={actWidth}
+        		width={actWidth-10}
         		height={600}>
         		{checkColumn}
         		{selectedColumn}
@@ -352,4 +352,4 @@ class siCargoTable extends React.Component {
     }
 }
 
-module.exports = siCargoTable;
+module.exports = RequestTable;

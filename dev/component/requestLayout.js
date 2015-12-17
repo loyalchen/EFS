@@ -1,6 +1,7 @@
 import React from 'react';
 import gStyle from '../globalStyle';
-import SiCargoTable from './siCargoTable';
+import RequestTable from './requestTable';
+import RequestDetail from './requestDetail';
 import MultiSelectGroup from './multiSelectionGroup';
 import {Link} from 'react-router';
 
@@ -43,29 +44,39 @@ class RequestLayout extends React.Component {
 		render() {
 			var sideBar, table, detail;
 			var {fullTableWidth,briefTableWidth} = this.state;
-			var {filterOptions,requestData,currentFilter,onFilterChange,currentItem,columnData} = this.props;
-			var sideBarClassName,tableClassName,detailClassName;
+			var {filterOptions,requestData,currentFilter,onFilterChange,currentItem,columnData,btnProps} = this.props;
 			
 			if(!currentItem){
-				sideBar = ( < div className = "col-xs-2 col-xs-offset-1" id='briefTable'><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-				table = ( < div className = "col-xs-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={fullTableWidth} handleCheckValueChange={this._handleCheckValueChange} columnData={columnData} tableModel={'full'} identityColumnName={this.props.identityColumnName} />< /div>);
+				sideBar = (<div className = "col-xs-2 col-xs-offset-1" id='briefTable'><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
+				table = (<div className = "col-xs-8" id='fullTable'>
+							<RequestTable 
+								data={requestData} 
+								cascadeWidth={fullTableWidth} 
+								handleCheckValueChange={this._handleCheckValueChange} 
+								columnData={columnData} 
+								tableModel={'full'} 
+								identityColumnName={this.props.identityColumnName} />
+						</div>);
 				detail = null;
 			}else{
 				sideBar = null
-				table = ( < div className = "col-xs-2 col-xs-offset-1" ><SiCargoTable data={requestData} cascadeWidth={briefTableWidth} columnData={columnData} currentItem={currentItem} tableModel={'brief'} identityColumnName={this.props.identityColumnName} />< /div>);
-				detail = ( < div className = "col-xs-8"> I am detail < /div>);
+				table = (<div className = "col-xs-2 col-xs-offset-1" >
+							<RequestTable 
+								data={requestData} 
+								cascadeWidth={briefTableWidth} 
+								columnData={columnData} 
+								currentItem={currentItem} 
+								tableModel={'brief'} 
+								identityColumnName={this.props.identityColumnName} />
+						</div>);
+				detail = (<div className = "col-xs-8">
+							<RequestDetail 
+								btnProps={btnProps}/>
+						  </div>);
 			}
-			// switch (!currentItem) {
-			// 	case gStyle.constant.PAGE_LIST:
-					
-			// 		break;
-			// 	case gStyle.constant.PAGE_DETAIL:
-					
-			// 		break;
-			// }
+
 			return (
 				<div className="row">
-
 				{sideBar} 
 				{table}
 				{detail} 

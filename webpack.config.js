@@ -1,8 +1,9 @@
 module.exports = {
 	entry: {
-		siCargo:"./dev/flux/siCargo/index.js"
+		siCargo:"./dev/flux/siCargo/index.js",
 		// test:"./dev/flux/test/index.js",
 		// uTest:"./dev/test/siCargoTableTest.js"
+		bootstrap:"./dev/jsCollect/subsetBootstrap.js"
 	},
 	output: {
 		path: __dirname + "/public/built/js/",
