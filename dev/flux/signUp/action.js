@@ -1,10 +1,19 @@
 import AppDispatcher from './dispatcher';
+import Constant from './constant';
 
 module.exports = {
-	changeFullName(fullName){
+	changeUserData(userInfo, type) {
 		AppDispatcher.dispatch({
-			actionType:Constant.FILTER_CHANGED,
-			fullName:fullName
+			actionType: Constant.INPUT_CHANGED,
+			userInfo: userInfo,
+			inputName: type
+		});
+	},
+
+	postRegisterData(userInfo) {
+		AppDispatcher.dispatch({
+			actionType: Constant.INPUT_CHANGED,
+			userInfo: userInfo
 		});
 	}
 }

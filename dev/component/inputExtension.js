@@ -1,7 +1,7 @@
 import React from 'react';
 import ShowErrMessage from './showErrMessage';
 
-class UserInput extends React.Component {
+class InputExtension extends React.Component {
     constructor(props) {
         super(props);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -9,7 +9,7 @@ class UserInput extends React.Component {
     }
 
 	handleInputChange() {
-		this.onInputChange(this.refs.textInput.value);
+		this.onInputChange(this.refs.textInput.value, this.props.label);
 	}
 
 
@@ -17,7 +17,6 @@ class UserInput extends React.Component {
 		return (
 			<div className="form-group">
 				<input
-					{...this.props}
 					className="form-control"
 					placeholder={this.props.placeholder} 
 					value={this.props.inputText}
@@ -33,4 +32,4 @@ class UserInput extends React.Component {
 	}
 }
 
-module.exports = UserInput;
+module.exports = InputExtension;

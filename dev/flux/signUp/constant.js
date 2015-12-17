@@ -1,5 +1,6 @@
 import keyMirror from 'keymirror';
 
 module.exports = keyMirror({
-	FULLNAME_CHANGED:null
+	INPUT_CHANGED:null,
+	POST_DATA:null
 });

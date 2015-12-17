@@ -1,7 +1,18 @@
 import React from 'react';
 import ShowErrMessage from './showErrMessage';
 
-class SelectInput extends React.Component {
+class SingleSelect extends React.Component {
+	constructor(props)
+	{
+		super(props);
+		console.log(props);
+		this.handleSelectChange = this.handleSelectChange.bind(this);
+		this.onSelectChange = this.props.onSelectChange;
+	}
+
+	handleSelectChange() {
+		this.onSelectChange(this.refs.select.value, this.props.label)
+	}
 
 	render() {
 	    var optionsNode = this.props.options.map (options => {
@@ -16,7 +27,10 @@ class SelectInput extends React.Component {
 			<div className="form-group">
 				<select 
 					className="form-control"
-					placeholder={this.props.placeholder} 
+					placeholder={this.props.placeholder}
+					value = {this.props.selectValue}
+					onChange={this.handleSelectChange}
+					ref="select" 
 				>
 				{optionsNode}
 				</select>
@@ -29,4 +43,4 @@ class SelectInput extends React.Component {
 	}
 }
 
-module.exports = SelectInput;
+module.exports = SingleSelect;
