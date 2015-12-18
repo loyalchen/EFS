@@ -13,7 +13,7 @@ exports.getUserInfo = function() {
 	//return userInfo;
 	return {
 		id: 3,
-		FullName: 'Jason Liu'
+		FullName: 'Jason Liu',
 		permissions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 	}
 };
