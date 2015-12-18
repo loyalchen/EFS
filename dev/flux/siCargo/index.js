@@ -4,6 +4,9 @@ import Immutable from 'immutable';
 import {Router,Route,Link} from 'react-router';
 
 import RequestLayout from '../../component/requestLayout';
+import RequestTable from '../../component/requestTable';
+import RequestDetail from '../../component/requestDetail';
+import MultiSelectGroup from '../../component/multiSelectionGroup';
 import requestDataStore from './requestDataStore';
 import columnDataStore from './siColumnDataStore';
 import Action from './action';
@@ -25,9 +28,15 @@ class CargoLayout extends React.Component {
         this._onColumnChanged = this._onColumnChanged.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         requestDataStore.addChangeListener(this._onRequestDataChanged);
         columnDataStore.addChangeListener(this._onColumnChanged);
+        var sideBarContainer = document.getElementById('requestLayoutSideBar'),
+            centerContainer = document.getElementById('requestLayoutCenter');
+        this.setState({
+            sideBarWidth: sideBarContainer.clientWidth,
+            centerWidth: centerContainer.clientWidth
+        });
     }
 
     componentWillUnmount(){
@@ -60,16 +69,38 @@ class CargoLayout extends React.Component {
 
     render() {
         var {filterOptions,requestData,currentFilter,columnData,tableModel} = this.state;
+        var currentItem = this.props.params.identity;
+        var tableWith = currentItem ? this.state.sideBarWidth:this.state.centerWidth;
+        var sideBar,table,detail;
+
+        sideBar = (
+                    <MultiSelectGroup 
+                        filterOptions={filterOptions} 
+                        currentFilter={currentFilter}  
+                        onFilterChange={this._onfilterChange} />
+                );
+
+        table = (
+                <RequestTable 
+                    data={requestData} 
+                    cascadeWidth={tableWith} 
+                    handleCheckValueChange={this._handleCheckValueChange} 
+                    columnData={columnData} 
+                    tableModel={'full'} 
+                    identityColumnName={"RequestId"} />
+            );
+
+
+        detail = (<RequestDetail />);
+
         return (
-        	<RequestLayout filterOptions={filterOptions} 
-                            currentItem={this.props.params.identity} 
-                            requestData={requestData} 
-                            currentFilter={currentFilter}  
-                            onFilterChange={this._onfilterChange} 
-                            handleCheckValueChange={this._handleCheckValueChange} 
-                            identityColumnName={"RequestId"}
-                            columnData={columnData}
-                            btnProps={btnProps}/>
+            <RequestLayout className={"row"} 
+                            sideBarClassName={"col-xs-2 col-xs-offset-1"} 
+                            centerClassName={"col-xs-8"} 
+                            sideBar={sideBar}  
+                            table={table} 
+                            detail={detail} 
+                            currentItem={currentItem}/>
         	);
     }
 }
@@ -82,8 +113,3 @@ ReactDom.render(
     </Router>,
     document.getElementById('content')
     );
-
-// ReactDom.render(
-// 	<CargoLayout />,
-// 	document.getElementById('content')
-// 	);
