@@ -21,12 +21,10 @@ class InputExtension extends React.Component {
 					placeholder={this.props.placeholder} 
 					value={this.props.inputText}
 					ref="textInput"
-					onChange={this.handleInputChange}
-				/>
+					onChange={this.handleInputChange} />
 
 				<ShowErrMessage
-					errorMessage={this.props.errorMessage}
-				/>
+					errorMessage={this.props.errorMessage} />
 			</div>
 		);
 	}

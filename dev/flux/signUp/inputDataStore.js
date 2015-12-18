@@ -1,109 +1,165 @@
 import AppDispatcher from './dispatcher';
 import {EventEmitter} from 'events';
 import Constant from './constant';
+import Immutable from 'immutable';
 
 var CHANGE_EVENT= 'changeData';
 var POST_EVENT='postData';
+var isRegisterInfoValid = false;
 
-var errorMessage = {fullName:'', email:'', loginName:'',group:'', office: ''};
-var isValid = false;
+var registerInfo= Immutable.fromJS({
+	fullName: '',
+	email:'',
+	loginName: '',
+	group: '',
+	office: ''
+});
+
+var errorMessage= Immutable.fromJS({
+	fullName: '',
+	email:'',
+	loginName: '',
+	group: '',
+	office: ''
+});
 
 function validateFullName(fullName)
 {
 	var reg = /^[A-Za-z]+$/;
-	errorMessage.fullName = '';
+	
+	let errorMessage = '';
+
 	if (!reg.test(fullName)) {
-		errorMessage.fullName = "FullName is invalid";
+		errorMessage= "FullName is invalid";
 	}
 
 	if (fullName =='') {
-		errorMessage.fullName = "FullName can't be empty";
+		errorMessage = "FullName can't be empty";
 	}
+
+	return errorMessage;
 }
 
 function validateEmail(email)
 {
-	var reg = /^[A-Za-z0-9]+$/;
-	errorMessage.email = '';
+	let reg = /^[A-Za-z0-9]+$/;
+
+	let errorMessage = '';
+	
 	if (!reg.test(email)) {
-		errorMessage.email = "Email is invalid";
+		errorMessage = "Email is invalid";
 	}
 
 	if (email == '') {
-		errorMessage.email = "Email can't be empty";
+		errorMessage = "Email can't be empty";
 	}
+
+	return errorMessage;
 }
 
 function validateLoginName(loginName)
 {
 	var reg = /^[A-Za-z]+$/;
-	errorMessage.loginName = '';
+
+	let errorMessage = '';
+	
 	if (!reg.test(loginName)) {
-		errorMessage.loginName = "LoginName is invalid";
+		errorMessage = "LoginName is invalid";
 	}
 
 	if (loginName =='') {
-		errorMessage.loginName = "LoginName can't be empty";
+		errorMessage= "LoginName can't be empty";
 	}
+
+	return errorMessage;
 }
 
 function validateGroup(group)
 {
-	errorMessage.group = '';
+	let errorMessage = '';
 
 	if (group =='') {
-		errorMessage.group = "Please choose your group";
+		errorMessage = "Please choose your group";
 	}
+
+	return errorMessage;
 }
 
 function validateOffice(office)
 {
-	errorMessage.office = '';
+	let errorMessage = '';
 
 	if (office =='') {
-		errorMessage.office = "Please choose your office";
+		errorMessage = "Please choose your office";
 	}
+
+	return errorMessage;
 }
 
-
-function validateUserInfo(userInfo, inputName)
+function changeRegisterInfo(specificName, info)
 {
-	switch(inputName)
+	registerInfo = registerInfo.set(specificName, info);
+}
+
+function validateSpecificRegisterInfo(specificName, info)
+{
+	let message = '';
+
+	switch(specificName)
 	{
 		case 'fullName':
-			validateFullName(userInfo);
+			message = validateFullName(info);
 			break;
 
 		case 'email': 
-			validateEmail(userInfo);
+			message = validateEmail(info);
 			break;
 
 		case 'loginName': 
-			validateLoginName(userInfo);
+			message = validateLoginName(info);
 			break;
 
 		case 'group': 
-			validateGroup(userInfo);
+			message = validateGroup(info);
 			break;
 
 		case 'office': 
-			validateOffice(userInfo);
+			message = validateOffice(info);
 			break;
+	}
+	
+	errorMessage = errorMessage.set(specificName, message);
+}
+
+function validatePostUserInfo(userInfo)
+{
+	isRegisterInfoValid = true;
+
+	for(let specificName of userInfo)
+	{
+		validateSpecificRegisterInfo(specificName[0], specificName[1]);
+	}
+
+	for(let message of errorMessage)
+	{
+		if (message[1] != '') {
+			isRegisterInfoValid = false;
+			break;
+		}
 	}
 }
 
-function validateUserInfo(userInfo)
-{
-	validateFullName(userInfo.fullName);
-	validateEmail(userInfo.email);
-	validateLoginName(userInfo.loginName);
-	validateGroup(userInfo.group);
-	validateOffice(userInfo.office);
-}
-
 class InputDataStore extends EventEmitter {
+	getRegisterInfo() {
+		return registerInfo;
+	}
+
 	getErrorMessage() {
 		return errorMessage;
+	}
+
+	getPostResult() {
+		return isRegisterInfoValid;
 	}
 
 	addChangeListener(callback) {
@@ -115,11 +171,11 @@ class InputDataStore extends EventEmitter {
 	}
 
 	addPostListener(callback) {
-		this.on(POST_DATA, callback);
+		this.on(POST_EVENT, callback);
 	}
 
 	emitPostRegisterData() {
-		this.emit(POST_DATA);
+		this.emit(POST_EVENT);
 	}
 }
 
@@ -127,10 +183,12 @@ class InputDataStore extends EventEmitter {
 AppDispatcher.register(action =>{
 	switch(action.actionType){
 		case Constant.INPUT_CHANGED:
-			validateUserInfo(action.userInfo, action.inputName);
+			changeRegisterInfo(action.inputName, action.userInfo);
+			validateSpecificRegisterInfo(action.inputName, action.userInfo);
 			InputDataStore.prototype.emitDataChange();
 			break;
-		case Constant.POST_DATA:
+			
+		case Constant.POST_REGISTERINFO:
 			validatePostUserInfo(action.userInfo);
 			InputDataStore.prototype.emitPostRegisterData();
 			break;

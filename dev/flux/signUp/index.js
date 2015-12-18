@@ -5,85 +5,73 @@ import EmailInput from '../../component/emailInput';
 import SingleSelect from '../../component/singleSelection';
 import Action from './action';
 import InputDataStore from './inputDataStore';
+import Immutable from 'immutable';
 
 class RegisterForm extends React.Component {
 	constructor(props) {
         super(props);
         this.state = {
-        	userInfo: {
+        	registerInfo: Immutable.fromJS({
         		fullName: '',
         		email:'',
         		loginName: '',
         		group: '',
         		office: ''
-        	},
-            errorMessage: {
+        	}),
+            errorMessage: Immutable.fromJS({
             	fullName: '',
             	email: '',
             	loginName: '',
 	            group: '',
             	office: ''
-            }
+            })
         }
         this.onRequestDataChanged = this.onRequestDataChanged.bind(this);
         this.handleUserInfoChange = this.handleUserInfoChange.bind(this);
         this.postRegisterInfo = this.postRegisterInfo.bind(this);
+        this.showPostResult = this.showPostResult.bind(this);
     }
 
     componentDidMount(){
         InputDataStore.prototype.addChangeListener(this.onRequestDataChanged);
-        InputDataStore.prototype.addPostListener(this.postRegisterInfo);
+        InputDataStore.prototype.addPostListener(this.showPostResult);
     }
 
     onRequestDataChanged(){
+    	let registerInfo = InputDataStore.prototype.getRegisterInfo();
+    	let errorMessage = InputDataStore.prototype.getErrorMessage();
+
         this.setState({
-            errorMessage:  InputDataStore.prototype.getErrorMessage()
+            registerInfo: registerInfo,
+            errorMessage: errorMessage
         });
     }
 
     //Handle user register information change and send an action to dispatcher
     handleUserInfoChange(value, ref)
     {
-    	console.log(ref);
-    	let userInfoTemp = this.state.userInfo;
-    	switch(ref)
-    	{
-    		case 'fullName':
-    			userInfoTemp.fullName=value;
-			break;
-
-    		case 'email':
-    			userInfoTemp.email=value;
-			break;
-
-    		case 'loginName':
-    			userInfoTemp.loginName=value;
-			break;
-
-    		case 'group':
-    			userInfoTemp.group=value;
-			break;
-
-    		case 'office':
-    			userInfoTemp.office=value;
-			break;
-    	}
-		this.setState({
-			userInfo: userInfoTemp
-		});
-    	console.log(this.state.userInfo);
-    	Action.changeUserData(value,ref);
+    	Action.changeUserData(value, ref);
     }
 
     postRegisterInfo(e) {
 	    e.preventDefault();
-	    Action.postRegisterData(this.state.userInfo);
-	    // var canPost = true;
+	    Action.postRegisterInfo(this.state.registerInfo);
+  	}
 
-	    // if(canPost) {
-     //  		alert('Success');
-	    // } 
-	    //
+  	showPostResult()
+  	{
+  		let isSuccess = InputDataStore.prototype.getPostResult();
+
+  		if (isSuccess) {
+  			alert('Register success and go to login page');
+  		}
+  		else
+  		{
+  			let errorMessage = InputDataStore.prototype.getErrorMessage();
+  			this.setState({
+  				errorMessage: errorMessage
+  			});
+  		}
   	}
 
 	render() {
@@ -104,56 +92,51 @@ class RegisterForm extends React.Component {
 		    {id: 1, value: 'nprc.mschkg.com', label: 'nprc.mschkg.com' },
 		    {id: 2, value: 'mschkg.com', label: 'mschkg.com' }
 		];
+
 		return (
 			<form role="form" className="bs-example bs-example-form" onSubmit={this.postRegisterInfo}>
 				<InputExtension 
 					placeholder="Input your full name" 
-					inputText={this.state.userInfo.fullName}
-					errorMessage={this.state.errorMessage.fullName}
+					inputText={this.state.registerInfo.get('fullName')}
+					errorMessage={this.state.errorMessage.get('fullName')}
 					label="fullName"
-					onInputChange={this.handleUserInfoChange}
-				/>
+					onInputChange={this.handleUserInfoChange} />
 
 				<EmailInput
 					options={optionsEmail}
 					placeholder="Input your email"
-					value = {this.state.userInfo.email}
-					errorMessage={this.state.errorMessage.email}
+					value = {this.state.registerInfo.get('email')}
+					errorMessage={this.state.errorMessage.get('email')}
 					label="email"
-					onInputChange={this.handleUserInfoChange}
-				/>
+					onInputChange={this.handleUserInfoChange} />
 
 				<InputExtension
 					placeholder="Input your login name" 
-					inputText={this.state.userInfo.loginName} 
-					errorMessage={this.state.errorMessage.loginName}
+					inputText={this.state.registerInfo.get('loginName')} 
+					errorMessage={this.state.errorMessage.get('loginName')}
 					label="loginName"
-					onInputChange={this.handleUserInfoChange}
-				/>
+					onInputChange={this.handleUserInfoChange} />
 
 				<SingleSelect 
 					options={optionsGroup} 
 					placeholder="Choose your group" 
-					selectValue={this.state.userInfo.group}
+					selectValue={this.state.registerInfo.get('group')}
 					label="group"
-					errorMessage={this.state.errorMessage.group}
-					onSelectChange={this.handleUserInfoChange}
-				 />
+					errorMessage={this.state.errorMessage.get('group')}
+					onSelectChange={this.handleUserInfoChange} />
 
 				<SingleSelect
 					options={optionsOffice} 
 					placeholder="Choose office" 
-					selectValue={this.state.userInfo.office}
+					selectValue={this.state.registerInfo.get('office')}
  					label="office"
-					errorMessage={this.state.errorMessage.office}
-					onSelectChange={this.handleUserInfoChange}
-				 />
+					errorMessage={this.state.errorMessage.get('office')}
+					onSelectChange={this.handleUserInfoChange} />
 
 				<input 
 					className="btn" 
 					type="submit" 
-					value="Register" 
-				/>
+					value="Register" />
 			</form>
 		);
 	}

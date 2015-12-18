@@ -5,7 +5,6 @@ class SingleSelect extends React.Component {
 	constructor(props)
 	{
 		super(props);
-		console.log(props);
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.onSelectChange = this.props.onSelectChange;
 	}
@@ -30,14 +29,12 @@ class SingleSelect extends React.Component {
 					placeholder={this.props.placeholder}
 					value = {this.props.selectValue}
 					onChange={this.handleSelectChange}
-					ref="select" 
-				>
+					ref="select" >
 				{optionsNode}
 				</select>
 
 				<ShowErrMessage
-					errorMessage={this.props.errorMessage}
-				/>
+					errorMessage={this.props.errorMessage} />
 			</div>
 		);
 	}

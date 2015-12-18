@@ -10,9 +10,9 @@ module.exports = {
 		});
 	},
 
-	postRegisterData(userInfo) {
+	postRegisterInfo(userInfo) {
 		AppDispatcher.dispatch({
-			actionType: Constant.INPUT_CHANGED,
+			actionType: Constant.POST_REGISTERINFO,
 			userInfo: userInfo
 		});
 	}
