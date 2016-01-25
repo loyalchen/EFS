@@ -69,6 +69,8 @@ AppDispatcher.register(function(action) {
 				cargoStore.emitDataChange();
 			}
 			break;
+		case Constant.REQUEST_CHECKED:
+			
 	}
 });
 

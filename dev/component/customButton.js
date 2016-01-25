@@ -20,8 +20,7 @@ class ButtonWithPermission extends React.Component {
         return (
         	{button}
         	);
-        }
-    }
+     }
 }
 
 class WorkflowButton extends React.Component {
@@ -40,12 +39,10 @@ class WorkflowButton extends React.Component {
                 needPermissionId={needPermissionId}
                 hasPermissions={hasPermissions}
                 handleClick={handleClick}
-                {text}/>
+                text={text}/>
             );
     }
 }
-
-export default ButtonWithPermissionAndStatus;
 
 
 module.exports = {ButtonWithPermission,WorkflowButton};

@@ -56,31 +56,31 @@ class RequestDetail extends React.Component {
     }
     
     render() {
-
-    	let {btnProps} = this.props;
-        return (
-        	<div>
-        		<ButtonList btnProps={btnProps}/>
-        		<div>
-        			<ul className="nav nav-tabs" role="tablist" id="detailTab">
-						<li role="presentation" className="active">
-							<a data-target="#baseInfo" role="tab" className="cursor-pointer" data-toggle="tab">Base Info</a>
-						</li>
-						<li role="presentation">
-							<a data-target="#workflow" role="tab" className="cursor-pointer" data-toggle="tab">Work Flow</a>
-						</li>
-					</ul>
-					<div className="tab-content">
-						<div role="tabpanel" className="tab-pane active" id="baseInfo">
-							<BaseInfo />
-						</div>
-						<div role="tabpanel" className="tab-pane" id="workflow">
-							<WorkFlow />
-						</div>
-					</div>
-        		</div>
-        	</div>
-        	);
+        return null;
+    	// let {btnProps} = this.props;
+     //    return (
+     //    	<div>
+     //    		<ButtonList btnProps={btnProps}/>
+     //    		<div>
+     //    			<ul className="nav nav-tabs" role="tablist" id="detailTab">
+					// 	<li role="presentation" className="active">
+					// 		<a data-target="#baseInfo" role="tab" className="cursor-pointer" data-toggle="tab">Base Info</a>
+					// 	</li>
+					// 	<li role="presentation">
+					// 		<a data-target="#workflow" role="tab" className="cursor-pointer" data-toggle="tab">Work Flow</a>
+					// 	</li>
+					// </ul>
+					// <div className="tab-content">
+					// 	<div role="tabpanel" className="tab-pane active" id="baseInfo">
+					// 		<BaseInfo />
+					// 	</div>
+					// 	<div role="tabpanel" className="tab-pane" id="workflow">
+					// 		<WorkFlow />
+					// 	</div>
+					// </div>
+     //    		</div>
+     //    	</div>
+     //    	);
     }
 }
 

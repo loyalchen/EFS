@@ -60,7 +60,6 @@ class SIStore extends EventEmitter {
 		return this.analyze.filterCollection(this.formattedData, this.filter)
 	}
 
-
 	getData(callback) {
 		var that = this;
 		request
@@ -79,6 +78,11 @@ class SIStore extends EventEmitter {
 				callback(null);
 			});
 	}
+
+	_dealOriginData(err,res){
+		
+	}
+
 
 	analyseCollection() {
 		return this.analyze.getFilterOption(this.formattedData);
@@ -102,7 +106,6 @@ class SIStore extends EventEmitter {
 				that.lastSyncTime = gStyle.formatTime();
 				gStyle.debugLog('detect data success');
 			});
-
 	}
 
 	process(forceFetch) {
@@ -159,7 +162,6 @@ class SIStore extends EventEmitter {
 			that.setIntervalProcess(period);
 		}, period);
 	}
-
 
 	emitDataChange() {
 		this.emit(CHANGE_EVENT);
