@@ -17,7 +17,7 @@ class EmailInput extends React.Component {
 	}
 
 	handleInputChange() {
-		this.onInputChange(this.state.emailInfo, this.props.label);
+		this.onInputChange(this.refs.email.value, 'email');
 	}
 
 	analyzeEmail(email){
@@ -38,6 +38,11 @@ class EmailInput extends React.Component {
 
 
 	render() {
+		var options1 = [
+	    { value: 'one', label: 'One' },
+	    { value: 'two', label: 'Two' }
+	];
+
 	    var optionsNode = this.props.options.map (options => {
 	      return (
 	        <option value={options.value} key={options.id}>
@@ -45,21 +50,16 @@ class EmailInput extends React.Component {
 	        </option>
 	      );
 	    });
-		var {emailInof} = this.state;
+		var {emailInfo} = this.state;
 		return (
 			
-			<div className="input-group">
+			<div className="form-group">
 				<input
-					 className="form-control"
-					 placeholder={this.props.placeholder}
-					 ref="emailName"
-					 value={emailInfo.name}
-					 onChange={this.handleInputChange}/>
-				<span className="input-group-addon">@</span>
-				// <select className="form-control select-sm ng-pristine ng-untouched ng-valid">
-				// 	{optionsNode}
-				// </select>
-				<Rselect value={emailInfo.domain} options={optionsNode} onChange={this.handleInputChange} />
+					className="form-control"
+					placeholder={this.props.placeholder}
+					ref="email"
+					value={this.props.value}
+					onChange={this.handleInputChange}/>
 				<ShowErrMessage 
 					errorMessage={this.props.errorMessage}/>
 			</div>

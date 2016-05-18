@@ -11,7 +11,7 @@ class ShowErrMessage extends React.Component {
 		}
 
 		return (
-				<span className="input-group-addon" style={styleSpan}>{this.props.errorMessage}</span>
+				<span className="label label-danger" style={styleSpan}>{this.props.errorMessage}</span>
 		);
 	}
 }

@@ -42,7 +42,7 @@ function validateFullName(fullName)
 
 function validateEmail(email)
 {
-	let reg = /^[A-Za-z0-9]+$/;
+	let reg = /^[A-Za-z0-9]+@[A-Za-z0-9]+.com$/;
 
 	let errorMessage = '';
 	

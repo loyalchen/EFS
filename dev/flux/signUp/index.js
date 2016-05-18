@@ -94,7 +94,7 @@ class RegisterForm extends React.Component {
 		];
 
 		return (
-			<form role="form" className="bs-example bs-example-form" onSubmit={this.postRegisterInfo}>
+			<form role="form" onSubmit={this.postRegisterInfo}>
 				<InputExtension 
 					placeholder="Input your full name" 
 					inputText={this.state.registerInfo.get('fullName')}
@@ -134,7 +134,7 @@ class RegisterForm extends React.Component {
 					onSelectChange={this.handleUserInfoChange} />
 
 				<input 
-					className="btn" 
+					className="btn btn-lg btn-danger" 
 					type="submit" 
 					value="Register" />
 			</form>
