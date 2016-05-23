@@ -1,65 +1,51 @@
 import React from 'react';
 import gStyle from '../globalStyle';
-import SiCargoTable from './siCargoTable';
-import MultiSelectGroup from './multiSelectionGroup';
+import {Link} from 'react-router';
 
 
 class RequestLayout extends React.Component {
-		constructor(props) {
-			super(props);
-			this.state = {
-				module: gStyle.constant.PAGE_LIST,
-				tableWidth:null
-			}
-			this._onClick = this._onClick.bind(this);
-			this._handleCheckValueChange = this._handleCheckValueChange.bind(this);
+	constructor(props) {
+		super(props);
+		this.state = {
+			module: gStyle.constant.PAGE_LIST,
+			fullTableWidth:null,
+			briefTableWidth:null
 		}
+		this._handleCheckValueChange = this._handleCheckValueChange.bind(this);
 
-		_onClick(e){
-			e.preventDefault();
-			this.setState({
-				module:this.state.module === gStyle.constant.PAGE_LIST ? gStyle.constant.PAGE_DETAIL : gStyle.constant.PAGE_LIST
-			});
-			console.log('current module is ' + this.state.module);
+	}
+
+	_handleCheckValueChange(identity,checkedValue){
+		this.props.handleCheckValueChange(identity,checkedValue);
+	}
+
+	render() {
+		var {className,sideBarClassName,centerClassName,sideBar,table,detail,currentItem} = this.props;
+
+		var sideBarComponent, centerComponent;
+
+		if(!currentItem){
+			sideBarComponent = (<div className={sideBarClassName} id="requestLayoutSideBar">{sideBar}</div>);
+			centerComponent = (<div className={centerClassName} id="requestLayoutCenter">{table}</div>);
+		}else{
+			sideBarComponent = (<div className={sideBarClassName}>{table}</div>);
+			centerComponent = (<div className={centerClassName}>{detail}</div>);
 		}
+		return (
+			<div className={className}>
+				{sideBarComponent}
+				{centerComponent}
+				<Link to="item/217133">Try</Link>
+			</div>
+			);
+		
+	}
+}
 
-		componentDidMount(){
-			this.setState({
-				tableWidth:document.getElementById('fullTable').clientWidth
-			});
-			
-		}
+RequestLayout.defaultProps = {
+	className: 'row',
+	sideBarClassName: 'col-xs-2 col-xs-offset-1',
+	centerClassName: 'col-xs-8'
+};
 
-		_handleCheckValueChange(identity,checkedValue){
-			this.props.handleCheckValueChange(identity,checkedValue);
-		}
-
-
-
-		render() {
-			var sideBar, table, detail;
-			var {tableWidth} = this.state;
-			var {filterOptions,requestData,currentFilter,onFilterChange} = this.props;
-
-			switch (this.state.module) {
-				case gStyle.constant.PAGE_LIST:
-					sideBar = ( < div className = "col-md-2 col-md-offset-1"><MultiSelectGroup filterOptions={filterOptions} currentFilter={currentFilter}  onFilterChange={onFilterChange} />< /div>);
-					table = ( < div className = "col-md-8" id='fullTable'><SiCargoTable data={requestData} cascadeWidth={tableWidth} handleCheckValueChange={this._handleCheckValueChange} identityColumnName={this.props.identityColumnName} />< /div>);
-					detail = null;
-					break;
-				case gStyle.constant.PAGE_DETAIL:
-					sideBar = null
-					table = ( < div className = "col-md-2 col-md-offset-1" id='briefTable'><SiCargoTable data={requestData} identityColumnName={this.props.identityColumnName} />< /div>);
-					detail = ( < div className = "col-md-8"> I am detail < /div>);
-					break;
-			}
-			return (
-				<div className="row">
-				{sideBar} 
-				{table}
-				{detail} 
-				</div>);
-			}
-		}
-
-		module.exports = RequestLayout;
+module.exports = RequestLayout;

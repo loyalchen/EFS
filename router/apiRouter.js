@@ -1,4 +1,5 @@
 var siCtrl = require('../controller/siController');
+var userCtrl = require('../controller/userController');
 var thunkify = require('thunkify');
 
 
@@ -11,6 +12,7 @@ function getControllers() {
 		cachedControllers = [];
 
 		cachedControllers.push(new siCtrl());
+        cachedControllers.push(new userCtrl());
 	}
 
 	return cachedControllers;

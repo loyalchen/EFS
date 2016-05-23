@@ -1,9 +1,5 @@
 import AppDispatcher from './dispatcher';
 import Constant from './constant';
-import {
-	EventEmitter
-}
-from 'events';
 import _ from 'underscore';
 import gStyle from '../../../dev/globalStyle';
 import SIBaseStore from '../../../dev/SIBaseStore';
@@ -73,6 +69,8 @@ AppDispatcher.register(function(action) {
 				cargoStore.emitDataChange();
 			}
 			break;
+		case Constant.REQUEST_CHECKED:
+			
 	}
 });
 
